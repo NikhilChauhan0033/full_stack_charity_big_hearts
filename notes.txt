@@ -2,6 +2,14 @@
 git init
 
 2) Ignore unwanted files (make sure .gitignore exists before this step)
+# Include the following in .gitignore:
+# env/
+# *.env
+# *.db
+# node_modules/
+# dist/
+# .vscode/
+# .DS_Store
 
 3) Stage all files
 git add .
@@ -9,15 +17,31 @@ git add .
 4) Commit your changes
 git commit -m "Initial commit - project setup and removed env from tracking"
 
-# (Optional) If you already committed `env/`, remove it from Git
+5) (Optional) If you already committed `env/`, remove it from Git
 git rm -r --cached backend/env/
 git commit -m "Removed virtual environment from Git tracking"
 
-5) Rename branch to 'main' (if not already)
+6) (Optional) Fix CRLF warning permanently (recommended for Windows users)
+
+# a) Configure Git to handle line endings automatically
+git config --global core.autocrlf true
+
+# b) Create a .gitattributes file to lock consistent behavior
+echo "* text=auto" > .gitattributes
+git add .gitattributes
+git commit -m "Add .gitattributes to fix CRLF warnings"
+
+# c) Normalize the project files (only once)
+git rm --cached -r .
+git reset --hard
+git add .
+git commit -m "Normalize line endings (CRLF warning fix)"
+
+7) Rename branch to 'main' (if not already)
 git branch -M main
 
-6) Connect your local repo to GitHub
+8) Connect your local repo to GitHub
 git remote add origin https://github.com/NikhilChauhan0033/full_stack_charity_big_hearts.git
 
-7) Push to GitHub
+9) Push to GitHub
 git push -u origin main
