@@ -1,0 +1,14 @@
+***Always remember activate your virtual environment and then run the code***
+
+1) we create the virtual environment using "python -m venv env" then activate it
+
+2) after create and activate virtual environment we install Django "pip install django"
+
+3) after django install we create our django project and app using 
+    1. django-admin startproject project_charity_big_hearts
+    2. cd project_charity_big_hearts
+    3. python manage.py startapp app_charity_big_hearts
+
+4) Run the project using "python manage.py runserver"
+
+5) 

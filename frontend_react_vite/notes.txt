@@ -1,0 +1,21 @@
+***we are using react vite***
+
+steps for isntall react vite
+
+1) npm create vite@latest
+
+2) Project name: charity_big_hearts
+
+3) Select a framework: React
+│  
+4) Select a variant: JavaScript
+│  
+5) Done. Now run given below steps
+
+6) cd charity_big_hearts
+
+7) npm install
+
+8) npm run dev
+
+9) visit  http://localhost:5173/

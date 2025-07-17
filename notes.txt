@@ -1,0 +1,9 @@
+we initialized our full_stack_charity_big_hearts project to git repo
+
+command for gitHub 
+
+1) git init
+
+2) git add .
+
+3)

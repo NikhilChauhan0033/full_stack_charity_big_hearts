@@ -1,0 +1,32 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+
+# Virtual environment
+env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Django migration files (optional to ignore, but usually kept in Git)
+# **Comment out if you want to track migrations**
+# */migrations/
+# *.sqlite3
+
+# SQLite / DB Browser database files
+*.db
+*.sqlite3
+
+# Sensitive files (like secret keys, API keys, etc.)
+*.env
+.env
+
+# System files
+.DS_Store
+Thumbs.db
+
+# VSCode config
+.vscode/
+
+# Logs
+*.log
+
