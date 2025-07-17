@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import Register from "./components/register_login_components/Register";
+import Login from "./components/register_login_components/Login";
+import Home from "./components/homecomponent/Home";
+import Donate from "./components/donationcomponent/Donate";
+
+import ProtectedRoute from "./components/protectprivatecomponent/ProtectedRoute";
+import RedirectIfAuth from "./components/protectprivatecomponent/RedirectIfAuth";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <BrowserRouter>
+        <Routes>
+          {/* Public Home Page (Always accessible) */}
+          <Route path="/" element={<Home />} />
+
+          {/* Donate - Protected Route (Only if logged in) */}
+          <Route
+            path="/donate"
+            element={
+              <ProtectedRoute>
+                <Donate />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Register Page - Only if not logged in */}
+          <Route
+            path="/register"
+            element={
+              <RedirectIfAuth>
+                <Register />
+              </RedirectIfAuth>
+            }
+          />
+
+          {/* Login Page - Only if not logged in */}
+          <Route
+            path="/login"
+            element={
+              <RedirectIfAuth>
+                <Login />
+              </RedirectIfAuth>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
