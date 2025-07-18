@@ -1,8 +1,9 @@
-from rest_framework import serializers
+from rest_framework import serializers 
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
+# RegisterSerializer → for registering a new user.
 class RegisterSerializer(serializers.ModelSerializer):
     name = serializers.CharField(write_only=True)
     email = serializers.EmailField()
@@ -31,7 +32,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         return user
 
-# ✅ Custom login serializer to support username or email
+# MyTokenObtainPairSerializer → for logging in with either email or username and generating JWT tokens.
+
+
 class MyTokenObtainPairSerializer(serializers.Serializer):
     identifier = serializers.CharField()
     password = serializers.CharField(write_only=True)

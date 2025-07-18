@@ -13,9 +13,7 @@ const Home = () => {
         await API.post("logout/", { refresh }); // ✅ Send refresh token to blacklist
       }
 
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
-      localStorage.removeItem("username");
+      localStorage.clear(); // ✅ Clears everything
       alert("Logged out successfully");
       navigate("/");
     } catch (error) {
