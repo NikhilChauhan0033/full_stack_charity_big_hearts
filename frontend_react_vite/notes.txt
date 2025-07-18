@@ -19,3 +19,6 @@ steps for isntall react vite
 8) npm run dev
 
 9) visit  http://localhost:5173/
+
+10) npm install --save @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons
+11) 

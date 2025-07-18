@@ -16,3 +16,5 @@
 6)"pip install djangorestframework" for app_charity_big_hearts
 
 7)"pip install django-cors-headers" for connect between frontend and backend
+
+8)"pip install djangorestframework-simplejwt" for JWT authentication

@@ -45,3 +45,17 @@ git remote add origin https://github.com/NikhilChauhan0033/full_stack_charity_bi
 
 9) Push to GitHub
 git push -u origin main
+
+json format for registration
+{
+    "name":"Krutik",
+    "email" : "krutik@gmail.com",
+    "password":"krutik123",
+    "confirm_password":"krutik123"
+}
+
+json format for login
+{
+    "identifier":"krutik@gmail.com",
+    "password":"krutik123"
+}
