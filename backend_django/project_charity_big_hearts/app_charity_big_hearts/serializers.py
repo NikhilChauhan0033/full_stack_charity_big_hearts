@@ -2,6 +2,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from .models import DonationCategory, DonationCampaign, Donation
+
 
 # RegisterSerializer → for registering a new user.
 class RegisterSerializer(serializers.ModelSerializer):
@@ -62,3 +64,27 @@ class MyTokenObtainPairSerializer(serializers.Serializer):
             "access": str(refresh.access_token),
             "username": user.first_name or user.username,
         }
+
+
+
+class DonationCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DonationCategory
+        fields = ['id', 'name']
+
+
+class DonationCampaignSerializer(serializers.ModelSerializer):
+    category = serializers.PrimaryKeyRelatedField(queryset=DonationCategory.objects.all())
+    to_go = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DonationCampaign
+        fields = ['id', 'category', 'image', 'title', 'goal_amount', 'raised_amount', 'to_go']
+
+    def get_to_go(self, obj):
+        return obj.to_go()
+
+class DonationSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = Donation
+        fields = '__all__'

@@ -1,11 +1,25 @@
-# urls.py
 from django.urls import path
-from .views import RegisterView, MyTokenObtainPairView
+from .views import (
+    RegisterView, MyTokenObtainPairView,
+    DonationCategoryListCreateAPIView,
+    DonationCampaignListCreateAPIView,
+    DonationCampaignDetailAPIView,
+    DonationListCreateAPIView,
+    DonationDetailAPIView
+)
 from rest_framework_simplejwt.views import TokenRefreshView, TokenBlacklistView
 
 urlpatterns = [
+    # 🔐 Auth
     path('register/', RegisterView.as_view(), name='register'),
-    path('login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('login/', MyTokenObtainPairView.as_view(), name='login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('logout/', TokenBlacklistView.as_view(), name='token_blacklist'),
+    path('logout/', TokenBlacklistView.as_view(), name='logout'),
+
+    # 📦 API Endpoints
+    path('categories/', DonationCategoryListCreateAPIView.as_view(), name='category-list'),
+    path('donations/', DonationCampaignListCreateAPIView.as_view(), name='donation-list'),
+    path('donations/<int:id>/', DonationCampaignDetailAPIView.as_view(), name='donation-detail'),
+    path('donate/', DonationListCreateAPIView.as_view(), name='donate-list'),
+    path('donate/<int:id>/', DonationDetailAPIView.as_view(), name='donate-detail'),
 ]
