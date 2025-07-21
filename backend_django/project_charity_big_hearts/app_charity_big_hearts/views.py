@@ -58,7 +58,6 @@ class DonationCampaignDetailAPIView(RetrieveUpdateDestroyAPIView):
     lookup_field = 'id'
     permission_classes = [IsAdminOrReadOnly]
 
-
 # ✅ Donations
 class DonationListCreateAPIView(ListCreateAPIView):
     queryset = Donation.objects.all()
