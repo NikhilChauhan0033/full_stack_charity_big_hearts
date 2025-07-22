@@ -5,8 +5,12 @@ from .views import (
     DonationCampaignListCreateAPIView,
     DonationCampaignDetailAPIView,
     DonationListCreateAPIView,
-    DonationDetailAPIView
+    DonationDetailAPIView,
+    TeamListCreateAPIView, 
+    TeamDetailAPIView
+
 )
+
 from rest_framework_simplejwt.views import TokenRefreshView, TokenBlacklistView
 
 urlpatterns = [
@@ -22,4 +26,7 @@ urlpatterns = [
     path('donations/<int:id>/', DonationCampaignDetailAPIView.as_view(), name='donation-detail'),
     path('donate/', DonationListCreateAPIView.as_view(), name='donate-list'),
     path('donate/<int:id>/', DonationDetailAPIView.as_view(), name='donate-detail'),
+
+    path('team/', TeamListCreateAPIView.as_view(), name='team-list'),
+    path('team/<int:id>/', TeamDetailAPIView.as_view(), name='team-detail'),
 ]

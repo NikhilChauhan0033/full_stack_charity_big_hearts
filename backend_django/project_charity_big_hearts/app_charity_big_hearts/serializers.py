@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import DonationCategory, DonationCampaign, Donation
+from .models import DonationCategory, DonationCampaign, Donation, Team
 
 
 # RegisterSerializer → for registering a new user.
@@ -87,4 +87,9 @@ class DonationCampaignSerializer(serializers.ModelSerializer):
 class DonationSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Donation
+        fields = '__all__'
+
+class TeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
         fields = '__all__'

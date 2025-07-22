@@ -10,12 +10,12 @@ from .serializers import (
     DonationCategorySerializer,
     DonationCampaignSerializer,
     DonationSerializer,
+    TeamSerializer,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import filters
-from .models import DonationCategory, DonationCampaign, Donation
+from .models import DonationCategory, DonationCampaign, Donation, Team
 from django_filters.rest_framework import DjangoFilterBackend
-
 
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
@@ -69,3 +69,14 @@ class DonationDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = DonationSerializer
     lookup_field = 'id'
     permission_classes = [IsAdminOrReadOnly]
+
+class TeamListCreateAPIView(ListCreateAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+class TeamDetailAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+    lookup_field = 'id'
+    permission_classes = [IsAdminOrReadOnly] 

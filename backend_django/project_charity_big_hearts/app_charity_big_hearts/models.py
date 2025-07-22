@@ -36,3 +36,15 @@ class Donation(models.Model):
 
     def __str__(self):
         return f"{self.name} donated {self.donation_amount}"
+
+class Team(models.Model):
+    image = models.ImageField(upload_to='team_images/')
+    name = models.CharField(max_length=100)
+    role = models.CharField(max_length=100)  # Example: "Volunteer", "Outreach Volunteer"
+    small_description = models.CharField(max_length=255)
+    experience = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone_no = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.name
