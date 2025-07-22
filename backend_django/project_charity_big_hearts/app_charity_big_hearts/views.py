@@ -2,6 +2,10 @@ from rest_framework.generics import (
     CreateAPIView,
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
+    ListAPIView,
+    RetrieveAPIView,
+    DestroyAPIView,
+
 )
 from django.contrib.auth.models import User
 from .serializers import (
@@ -11,13 +15,14 @@ from .serializers import (
     DonationCampaignSerializer,
     DonationSerializer,
     TeamSerializer,
+    ContactSerializer
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import filters
-from .models import DonationCategory, DonationCampaign, Donation, Team
+from .models import DonationCategory, DonationCampaign, Donation, Team,Contact
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.permissions import BasePermission, SAFE_METHODS,AllowAny
 
 class IsAdminOrReadOnly(BasePermission):
     def has_permission(self, request, view):
@@ -80,3 +85,30 @@ class TeamDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = TeamSerializer
     lookup_field = 'id'
     permission_classes = [IsAdminOrReadOnly] 
+
+
+# Already available for public
+class ContactCreateAPIView(CreateAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+    permission_classes = [AllowAny]
+
+# Admin-only: view list of all contacts
+class ContactListAPIView(ListAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+    permission_classes = [IsAdminOrReadOnly]  
+
+# Admin-only: view single contact message
+class ContactDetailAPIView(RetrieveAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+    permission_classes = [IsAdminOrReadOnly]
+    lookup_field = 'id'
+
+# Optional: delete message if spam or junk
+class ContactDeleteAPIView(DestroyAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+    permission_classes = [IsAdminOrReadOnly]
+    lookup_field = 'id'
