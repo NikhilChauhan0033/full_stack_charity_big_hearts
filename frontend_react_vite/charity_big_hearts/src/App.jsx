@@ -1,5 +1,7 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
 
 import Register from "./components/register_login_components/Register";
 import Login from "./components/register_login_components/Login";
@@ -14,14 +16,34 @@ import DonationCategory from "./components/donationscategorycomponent/DonationCa
 import DonationDetail from "./components/donationsdetailcomponent/DonationDetail";
 
 function App() {
+  // 🔁 Refresh access token every 4 minutes in background
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const refresh = localStorage.getItem("refresh");
+      if (!refresh) return;
+
+      try {
+        const res = await axios.post("http://127.0.0.1:8000/api/auth/token/refresh/", {
+          refresh: refresh,
+        });
+
+        localStorage.setItem("access", res.data.access);
+        console.log("✅ Access token refreshed");
+      } catch (err) {
+        console.warn("❌ Refresh token failed. Logging out.");
+        localStorage.clear();
+        window.location.href = "/login";
+      }
+    }, 4 * 60 * 1000); // every 4 minutes
+
+    return () => clearInterval(interval); // Cleanup
+  }, []);
+
   return (
     <>
       <BrowserRouter>
         <Routes>
-          {/* Public Home Page (Always accessible) */}
           <Route path="/" element={<Home />} />
-
-          {/* Donate - Protected Route (Only if logged in) */}
           <Route
             path="/donate"
             element={
@@ -30,15 +52,10 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route path="/donations" element={<Donations />} />
-          <Route
-            path="/donations/category/:id"
-            element={<DonationCategory />}
-          />
+          <Route path="/donations/category/:id" element={<DonationCategory />} />
           <Route path="/donations/detail/:id" element={<DonationDetail />} />
 
-          {/* Register Page - Only if not logged in */}
           <Route
             path="/register"
             element={
@@ -47,8 +64,6 @@ function App() {
               </RedirectIfAuth>
             }
           />
-
-          {/* Login Page - Only if not logged in */}
           <Route
             path="/login"
             element={
