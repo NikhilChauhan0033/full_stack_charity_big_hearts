@@ -9,6 +9,10 @@ import Donate from "./components/donationcomponent/Donate";
 import ProtectedRoute from "./components/protectprivatecomponent/ProtectedRoute";
 import RedirectIfAuth from "./components/protectprivatecomponent/RedirectIfAuth";
 
+import Donations from "./components/donationscomponent/donations";
+import DonationCategory from "./components/donationscategorycomponent/DonationCategory";
+import DonationDetail from "./components/donationsdetailcomponent/DonationDetail";
+
 function App() {
   return (
     <>
@@ -26,6 +30,13 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/donations" element={<Donations />} />
+          <Route
+            path="/donations/category/:id"
+            element={<DonationCategory />}
+          />
+          <Route path="/donations/detail/:id" element={<DonationDetail />} />
 
           {/* Register Page - Only if not logged in */}
           <Route

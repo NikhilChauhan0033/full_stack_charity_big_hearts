@@ -1,5 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import API from "../base_api/api";
+import Donations from "../donationscomponent/donations";
+
 
 const Home = () => {
   const navigate = useNavigate();
@@ -44,6 +46,9 @@ const Home = () => {
       )}
 
       <button onClick={handleDonate}>Donate</button>
+
+      <Donations />
+
     </>
   );
 };

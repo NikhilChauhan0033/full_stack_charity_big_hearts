@@ -54,7 +54,7 @@ class DonationCampaignListCreateAPIView(ListCreateAPIView):
     serializer_class = DonationCampaignSerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['title']
-    filterset_fields = ['category__name']
+    filterset_fields = ['category', 'category__name']
     permission_classes = [IsAdminOrReadOnly]
 
 class DonationCampaignDetailAPIView(RetrieveUpdateDestroyAPIView):

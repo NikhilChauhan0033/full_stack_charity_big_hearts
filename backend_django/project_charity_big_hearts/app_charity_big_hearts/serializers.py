@@ -72,10 +72,10 @@ class DonationCategorySerializer(serializers.ModelSerializer):
         model = DonationCategory
         fields = ['id', 'name']
 
-
 class DonationCampaignSerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(queryset=DonationCategory.objects.all())
     to_go = serializers.SerializerMethodField()
+    # image = serializers.ImageField(use_url=True)
 
     class Meta:
         model = DonationCampaign
