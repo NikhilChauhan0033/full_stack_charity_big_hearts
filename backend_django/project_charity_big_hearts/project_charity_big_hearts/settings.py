@@ -150,10 +150,11 @@ from datetime import timedelta
 
 # Simple JWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Security over convenience
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # Your requirement
+    'ROTATE_REFRESH_TOKENS': True,                   # Enhanced security
+    'BLACKLIST_AFTER_ROTATION': True,                # Prevent token reuse
+    'UPDATE_LAST_LOGIN': True,                       # 👈 YES! Add this
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 

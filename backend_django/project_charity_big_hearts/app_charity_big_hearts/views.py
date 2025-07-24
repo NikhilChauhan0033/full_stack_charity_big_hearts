@@ -22,7 +22,7 @@ from rest_framework import filters
 from .models import DonationCategory, DonationCampaign, Donation, Team,Contact
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework.permissions import BasePermission, SAFE_METHODS,AllowAny
+from rest_framework.permissions import BasePermission, SAFE_METHODS,AllowAny,IsAuthenticated
 
 class IsAdminOrReadOnly(BasePermission):
     def has_permission(self, request, view):
@@ -67,7 +67,7 @@ class DonationCampaignDetailAPIView(RetrieveUpdateDestroyAPIView):
 class DonationListCreateAPIView(ListCreateAPIView):
     queryset = Donation.objects.all()
     serializer_class = DonationSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
 class DonationDetailAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Donation.objects.all()

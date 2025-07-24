@@ -65,8 +65,6 @@ class MyTokenObtainPairSerializer(serializers.Serializer):
             "username": user.first_name or user.username,
         }
 
-
-
 class DonationCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = DonationCategory

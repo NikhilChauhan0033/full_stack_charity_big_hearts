@@ -1,7 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
-import API from "../base_api/api";
+import { logout } from "../base_api/api"; // ✅ Import logout utility
 import Donations from "../donationscomponent/donations";
-
+import Team from "../team/Team";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -10,14 +10,9 @@ const Home = () => {
 
   const handleLogout = async () => {
     try {
-      const refresh = localStorage.getItem("refresh");
-      if (refresh) {
-        await API.post("logout/", { refresh }); // ✅ Send refresh token to blacklist
-      }
-
-      localStorage.clear(); // ✅ Clears everything
+      await logout(); // ✅ This handles token clearing and backend logout
       alert("Logged out successfully");
-      navigate("/");
+      navigate("/"); // Redirect after logout
     } catch (error) {
       alert("Something went wrong during logout");
     }
@@ -38,7 +33,7 @@ const Home = () => {
       <h2>Welcome to Home</h2>
 
       {token ? (
-        <button onClick={handleLogout}>Logout</button>
+        <button onClick={handleLogout}>Logout</button> // ✅ Uses utility now
       ) : (
         <Link to="/login">
           <button>Login/Register</button>
@@ -46,9 +41,20 @@ const Home = () => {
       )}
 
       <button onClick={handleDonate}>Donate</button>
+      <br />
+      <br />
+      <Link to="/team">
+        <button>Team</button>
+      </Link>
+
+      <br />
+      <br />
+      <Link to="/contact">
+        <button>Contact</button>
+      </Link>
 
       <Donations />
-
+      <Team />
     </>
   );
 };
