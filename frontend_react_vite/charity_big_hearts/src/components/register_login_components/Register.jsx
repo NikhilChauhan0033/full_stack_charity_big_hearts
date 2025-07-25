@@ -82,7 +82,7 @@ function Register() {
             onChange={handleChange}
             required
             InputLabelProps={{
-              sx: {
+              sx: {                                  //this sx is like style tag in html in mui we have sx prop
                 color: "gray",
                 "&.Mui-focused": { color: "#F74F22" }, // Label color when focused
               },
