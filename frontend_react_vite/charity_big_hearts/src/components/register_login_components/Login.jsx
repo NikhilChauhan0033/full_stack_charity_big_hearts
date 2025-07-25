@@ -1,91 +1,184 @@
 import React, { useState } from "react";
-import API from "../base_api/api";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import API from "../base_api/api"; // Axios instance configured with baseURL & token interceptor
+import {
+  TextField,
+  Button,
+  Snackbar,
+  Alert,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material"; // Icons for show/hide password
 
 function Login() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Used to programmatically navigate user
 
+  // Form input values
   const [form, setForm] = useState({
-    identifier: "",
-    password: "",
+    identifier: "",   // Can be email or username
+    password: "",     // Password
   });
 
+  // State for error or success messages
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  // Toggle for password visibility
   const [showPassword, setShowPassword] = useState(false);
 
+  // Snackbar state to show feedback popup
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarType, setSnackbarType] = useState("success"); // "success" or "error"
+
+  // Update form values when user types
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError("");
     setSuccess("");
   };
 
+  // Handle login submit
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form refresh
     try {
-      const res = await API.post("login/", form);
+      const res = await API.post("login/", form); // POST to /login/ endpoint
+      // Save JWT tokens and username in localStorage
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
       localStorage.setItem("username", res.data.username);
 
+      // Show success message and redirect
       setSuccess("Login successful! Redirecting...");
-      setTimeout(() => {
-        navigate("/");
-      }, 1000); // 1 second delay
+      setSnackbarType("success");
+      setOpenSnackbar(true);
+      setTimeout(() => navigate("/"), 1000); // Navigate to homepage after 1 second
     } catch (err) {
+      // Show error if login fails
       const backendError =
         err.response?.data?.error || "Login failed. Please try again.";
       setError(backendError);
+      setSnackbarType("error");
+      setOpenSnackbar(true);
     }
   };
 
   return (
-    <form
-      onSubmit={handleLogin}
-      style={{ maxWidth: "400px", margin: "0 auto" }}
-    >
-      <input
-        name="identifier"
-        placeholder="Email or Username"
-        onChange={handleChange}
-        required
-        style={{ width: "100%", padding: "10px", marginBottom: "15px" }}
-      />
+    <div className="min-h-screen flex items-center justify-center bg-[#F74F22] px-4">
+      <form
+        onSubmit={handleLogin}
+        className="w-full max-w-md bg-white p-6 rounded-lg shadow-md"
+      >
+        {/* Form Heading */}
+        <h2 className="text-2xl font-bold text-center mb-6 text-[#F74F22]">
+          Login
+        </h2>
 
-      <div style={{ position: "relative", marginBottom: "15px" }}>
-        <input
-          name="password"
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          onChange={handleChange}
-          required
-          style={{ width: "100%", padding: "10px", paddingRight: "40px" }}
-        />
-        <FontAwesomeIcon
-          icon={showPassword ? faEyeSlash : faEye}
-          onClick={() => setShowPassword(!showPassword)}
-          style={{
-            position: "absolute",
-            top: "50%",
-            right: "10px",
-            transform: "translateY(-50%)",
-            cursor: "pointer",
-            color: "#888",
+        {/* Email or Username Field */}
+        <div className="mb-4">
+          <TextField
+            fullWidth
+            label="Email or Username"
+            name="identifier"
+            value={form.identifier}
+            onChange={handleChange}
+            required
+            InputLabelProps={{
+              sx: {
+                color: "gray",
+                "&.Mui-focused": { color: "#F74F22" }, // Label turns red when focused
+              },
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" },
+                "&:hover fieldset": { borderColor: "#F74F22" },
+                "&.Mui-focused fieldset": { borderColor: "#F74F22" },
+              },
+            }}
+          />
+        </div>
+
+        {/* Password Field with Visibility Toggle */}
+        <div className="mb-4">
+          <TextField
+            fullWidth
+            label="Password"
+            name="password"
+            type={showPassword ? "text" : "password"} // Toggle between text/password
+            value={form.password}
+            onChange={handleChange}
+            required
+            InputLabelProps={{
+              sx: {
+                color: "gray",
+                "&.Mui-focused": { color: "#F74F22" },
+              },
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" },
+                "&:hover fieldset": { borderColor: "#F74F22" },
+                "&.Mui-focused fieldset": { borderColor: "#F74F22" },
+              },
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
+
+        {/* Login Button */}
+        <Button
+          fullWidth
+          type="submit"
+          variant="contained"
+          sx={{
+            backgroundColor: "#F74F22",
+            "&:hover": { backgroundColor: "#d84315" },
           }}
-        />
-      </div>
+        >
+          Login
+        </Button>
 
-      <button type="submit" style={{ width: "100%", padding: "10px" }}>
-        Login
-      </button>
+        {/* Register Redirect */}
+        <div className="mt-4 text-center">
+          <span>Don't have an account? </span>
+          <span
+            className="text-[#F74F22] cursor-pointer font-medium hover:underline"
+            onClick={() => navigate("/register")}
+          >
+            Register
+          </span>
+        </div>
 
-      {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
-      {success && (
-        <p style={{ color: "green", marginTop: "10px" }}>{success}</p>
-      )}
-    </form>
+        {/* Snackbar Alert for Success/Error */}
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={5000} // Auto close in 5 seconds
+          onClose={() => setOpenSnackbar(false)}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={() => setOpenSnackbar(false)}
+            severity={snackbarType} // Dynamic: "success" or "error"
+            sx={{ width: "100%" }}
+          >
+            {snackbarType === "success" ? success : error}
+          </Alert>
+        </Snackbar>
+      </form>
+    </div>
   );
 }
 

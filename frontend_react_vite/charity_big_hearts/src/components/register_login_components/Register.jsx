@@ -1,12 +1,19 @@
 import React, { useState } from "react";
-import API from "../base_api/api";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import API from "../base_api/api"; // Pre-configured axios instance
+import {
+  TextField,
+  Button,
+  Snackbar,
+  Alert,
+  IconButton,
+} from "@mui/material"; // MUI components
+import { Visibility, VisibilityOff } from "@mui/icons-material"; // Eye icons for password toggle
 
 function Register() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // For redirection
 
+  // Form data state
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -14,108 +21,223 @@ function Register() {
     confirm_password: "",
   });
 
+  // Feedback state
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  // Password show/hide toggle
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  // Snackbar state for popup messages
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarType, setSnackbarType] = useState("success"); // success or error
+
+  // Update form values on input change
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError("");
     setSuccess("");
   };
 
+  // Form submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await API.post("register/", form);
+      await API.post("register/", form); // Send form data to backend
       setSuccess("Registration successful! Redirecting to login...");
-      setTimeout(() => navigate("/login"), 1000); // Redirect after 1 second
+      setSnackbarType("success");
+      setOpenSnackbar(true);
+      setTimeout(() => navigate("/login"), 1000); // Redirect to login
     } catch (err) {
+      // Extract error from backend or use fallback
       const backendError =
         err.response?.data?.error ||
         Object.values(err.response?.data || {})[0] ||
         "Registration failed. Please try again.";
-
       setError(backendError);
+      setSnackbarType("error");
+      setOpenSnackbar(true);
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ maxWidth: "400px", margin: "0 auto" }}
-    >
-      <input
-        name="name"
-        placeholder="Name"
-        onChange={handleChange}
-        required
-        style={{ width: "100%", padding: "10px", marginBottom: "15px" }}
-      />
-      <input
-        name="email"
-        placeholder="Email"
-        onChange={handleChange}
-        required
-        style={{ width: "100%", padding: "10px", marginBottom: "15px" }}
-      />
+    // Centered form wrapper
+    <div className="min-h-screen flex items-center justify-center bg-[#F74F22] px-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md bg-white p-6 rounded-lg shadow-md"
+      >
+        <h2 className="text-2xl font-bold text-center mb-6 text-[#F74F22]">
+          Register
+        </h2>
 
-      <div style={{ position: "relative", marginBottom: "15px" }}>
-        <input
-          name="password"
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          onChange={handleChange}
-          required
-          style={{ width: "100%", padding: "10px", paddingRight: "40px" }}
-        />
-        <FontAwesomeIcon
-          icon={showPassword ? faEyeSlash : faEye}
-          onClick={() => setShowPassword(!showPassword)}
-          style={{
-            position: "absolute",
-            top: "50%",
-            right: "10px",
-            transform: "translateY(-50%)",
-            cursor: "pointer",
-            color: "#888",
+        {/* Name input */}
+        <div className="mb-4">
+          <TextField
+            fullWidth
+            label="Name"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            required
+            InputLabelProps={{
+              sx: {
+                color: "gray",
+                "&.Mui-focused": { color: "#F74F22" }, // Label color when focused
+              },
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" }, // Default border
+                "&:hover fieldset": { borderColor: "#F74F22" },
+                "&.Mui-focused fieldset": { borderColor: "#F74F22" },
+              },
+            }}
+          />
+        </div>
+
+        {/* Email input */}
+        <div className="mb-4">
+          <TextField
+            fullWidth
+            label="Email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            required
+            type="email"
+            InputLabelProps={{
+              sx: {
+                color: "gray",
+                "&.Mui-focused": { color: "#F74F22" },
+              },
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" },
+                "&:hover fieldset": { borderColor: "#F74F22" },
+                "&.Mui-focused fieldset": { borderColor: "#F74F22" },
+              },
+            }}
+          />
+        </div>
+
+        {/* Password input with toggle */}
+        <div className="mb-4">
+          <TextField
+            fullWidth
+            label="Password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            value={form.password}
+            onChange={handleChange}
+            required
+            InputLabelProps={{
+              sx: {
+                color: "gray",
+                "&.Mui-focused": { color: "#F74F22" },
+              },
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" },
+                "&:hover fieldset": { borderColor: "#F74F22" },
+                "&.Mui-focused fieldset": { borderColor: "#F74F22" },
+              },
+            }}
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  edge="end"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              ),
+            }}
+          />
+        </div>
+
+        {/* Confirm Password with toggle */}
+        <div className="mb-4">
+          <TextField
+            fullWidth
+            label="Confirm Password"
+            name="confirm_password"
+            type={showConfirm ? "text" : "password"}
+            value={form.confirm_password}
+            onChange={handleChange}
+            required
+            InputLabelProps={{
+              sx: {
+                color: "gray",
+                "&.Mui-focused": { color: "#F74F22" },
+              },
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" },
+                "&:hover fieldset": { borderColor: "#F74F22" },
+                "&.Mui-focused fieldset": { borderColor: "#F74F22" },
+              },
+            }}
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  edge="end"
+                  tabIndex={-1}
+                >
+                  {showConfirm ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              ),
+            }}
+          />
+        </div>
+
+        {/* Submit Button */}
+        <Button
+          fullWidth
+          type="submit"
+          variant="contained"
+          sx={{
+            backgroundColor: "#F74F22",
+            "&:hover": { backgroundColor: "#d84315" }, // Darker red on hover
           }}
-        />
-      </div>
+        >
+          Register
+        </Button>
 
-      <div style={{ position: "relative", marginBottom: "15px" }}>
-        <input
-          name="confirm_password"
-          type={showConfirm ? "text" : "password"}
-          placeholder="Confirm Password"
-          onChange={handleChange}
-          required
-          style={{ width: "100%", padding: "10px", paddingRight: "40px" }}
-        />
-        <FontAwesomeIcon
-          icon={showConfirm ? faEyeSlash : faEye}
-          onClick={() => setShowConfirm(!showConfirm)}
-          style={{
-            position: "absolute",
-            top: "50%",
-            right: "10px",
-            transform: "translateY(-50%)",
-            cursor: "pointer",
-            color: "#888",
-          }}
-        />
-      </div>
+        {/* Login link below form */}
+        <div className="mt-4 text-center">
+          <span>Already have an account? </span>
+          <span
+            className="text-[#F74F22] cursor-pointer font-medium hover:underline"
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </span>
+        </div>
 
-      <button type="submit" style={{ width: "100%", padding: "10px" }}>
-        Register
-      </button>
-
-      {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
-      {success && (
-        <p style={{ color: "green", marginTop: "10px" }}>{success}</p>
-      )}
-    </form>
+        {/* Snackbar for showing success/error messages */}
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={5000} // Auto close after 5 seconds
+          onClose={() => setOpenSnackbar(false)}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={() => setOpenSnackbar(false)}
+            severity={snackbarType} // green or red alert based on type
+            sx={{ width: "100%" }}
+          >
+            {snackbarType === "success" ? success : error}
+          </Alert>
+        </Snackbar>
+      </form>
+    </div>
   );
 }
 
