@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    RegisterView, MyTokenObtainPairView,
+    CartDeleteAPIView, RegisterView, MyTokenObtainPairView,
     DonationCategoryListCreateAPIView,
     DonationCampaignListCreateAPIView,
     DonationCampaignDetailAPIView,
@@ -12,6 +12,8 @@ from .views import (
     ContactListAPIView,
     ContactDetailAPIView,
     ContactDeleteAPIView,
+    CartListCreateAPIView,
+    CartDeleteAPIView,
 )
 
 from rest_framework_simplejwt.views import TokenRefreshView, TokenBlacklistView
@@ -37,5 +39,8 @@ urlpatterns = [
     path('admin/contact/', ContactListAPIView.as_view(), name='contact-list'),
     path('admin/contact/<int:id>/', ContactDetailAPIView.as_view(), name='contact-detail'),
     path('admin/contact/<int:id>/delete/', ContactDeleteAPIView.as_view(), name='contact-delete'),
+
+    path('cart/', CartListCreateAPIView.as_view(), name='cart-list-create'),
+    path('cart/<int:pk>/', CartDeleteAPIView.as_view(), name='cart-delete'),
 ]
 

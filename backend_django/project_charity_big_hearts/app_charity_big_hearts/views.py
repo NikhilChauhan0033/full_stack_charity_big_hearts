@@ -15,13 +15,15 @@ from .serializers import (
     DonationCampaignSerializer,
     DonationSerializer,
     TeamSerializer,
-    ContactSerializer
+    ContactSerializer,
+    CartSerializer,
+    CartReadSerializer,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework import filters
-from .models import DonationCategory, DonationCampaign, Donation, Team,Contact
+from rest_framework import filters,generics, permissions
+from .models import DonationCategory, DonationCampaign, Donation, Team,Contact,Cart
 from django_filters.rest_framework import DjangoFilterBackend
-
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, SAFE_METHODS,AllowAny,IsAuthenticated
 
 class IsAdminOrReadOnly(BasePermission):
@@ -112,3 +114,32 @@ class ContactDeleteAPIView(DestroyAPIView):
     serializer_class = ContactSerializer
     permission_classes = [IsAdminOrReadOnly]
     lookup_field = 'id'
+
+from rest_framework.response import Response
+from rest_framework import status
+
+class CartListCreateAPIView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Cart.objects.filter(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return CartSerializer
+        return CartReadSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        campaign = serializer.validated_data.get('campaign')
+
+        if Cart.objects.filter(user=user, campaign=campaign).exists():
+            raise ValidationError("Campaign already in cart.")
+
+        serializer.save(user=user)
+
+
+class CartDeleteAPIView(generics.DestroyAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+    permission_classes = [permissions.IsAuthenticated]

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import DonationCategory, DonationCampaign, Donation, Team,Contact
+from .models import DonationCategory, DonationCampaign, Donation, Team,Contact,Cart
 
 
 # RegisterSerializer → for registering a new user.
@@ -99,3 +99,19 @@ class ContactSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
         
+# For POST/CREATE: Accept campaign ID
+class CartSerializer(serializers.ModelSerializer):
+    campaign = serializers.PrimaryKeyRelatedField(queryset=DonationCampaign.objects.all())
+
+    class Meta:
+        model = Cart
+        fields = ['id', 'user', 'campaign', 'added_at']
+        read_only_fields = ['user', 'added_at']
+
+# For GET: Return full campaign details
+class CartReadSerializer(serializers.ModelSerializer):
+    campaign = DonationCampaignSerializer(read_only=True)
+
+    class Meta:
+        model = Cart
+        fields = ['id', 'user', 'campaign', 'added_at']

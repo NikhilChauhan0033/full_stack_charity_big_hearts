@@ -21,6 +21,10 @@ import TeamDetail from "./components/team/TeamDetail";
 
 import Contact from "./components/contactcomponent/Contact";
 
+import SearchBar from "./components/searchbar/SearchBar";
+
+import CartPage from "./components/cartcomponent/CartPage";
+
 
 import { refreshAccessToken, isTokenExpired } from "./components/base_api/api";
 
@@ -105,6 +109,10 @@ function App() {
           <Route path="/team/:id" element={<TeamDetail />} />
 
           <Route path="/contact" element={<Contact />} />
+
+          <Route path="/donations/search/:query" element={<SearchBar />} />
+
+          <Route path="/cart" element={<CartPage />} />
 
           <Route
             path="/register"

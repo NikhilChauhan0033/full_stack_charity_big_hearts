@@ -2,11 +2,17 @@ import { useNavigate, Link } from "react-router-dom";
 import { logout } from "../base_api/api"; // ✅ Import logout utility
 import Donations from "../donationscomponent/donations";
 import Team from "../team/Team";
+import SearchBar from "../searchbar/SearchBar";
+import { useState } from "react";
+import { useEffect } from "react";
+import API from "../base_api/api";
 
 const Home = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("access");
   const username = localStorage.getItem("username");
+
+  const [cartCount, setCartCount] = useState(0);
 
   const handleLogout = async () => {
     try {
@@ -27,6 +33,15 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    if (token) {
+      API.get("cart/").then((res) => {
+        const items = res.data.results || res.data;
+        setCartCount(items?.length || 0);
+      });
+    }
+  }, [token]);
+
   return (
     <>
       {token && username && <h1>Welcome, {username}!</h1>}
@@ -41,6 +56,7 @@ const Home = () => {
       )}
 
       <button onClick={handleDonate}>Donate</button>
+      <button className="ml-4">Cart count = {cartCount}</button>
       <br />
       <br />
       <Link to="/team">
@@ -53,6 +69,7 @@ const Home = () => {
         <button>Contact</button>
       </Link>
 
+      <SearchBar />
       <Donations />
       <Team />
     </>

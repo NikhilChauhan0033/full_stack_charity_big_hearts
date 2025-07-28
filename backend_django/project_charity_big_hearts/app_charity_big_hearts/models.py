@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class DonationCategory(models.Model):
     name = models.CharField(max_length=100)
@@ -58,3 +59,14 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Cart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cart_items")
+    campaign = models.ForeignKey(DonationCampaign, on_delete=models.CASCADE)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'campaign']  # prevent duplicates
+
+    def __str__(self):
+        return f"{self.user.username} - {self.campaign.title}"

@@ -1,35 +1,64 @@
-// src/components/donationcomponent/DonationDetail.jsx
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import API from "../base_api/api";
 
 const DonationDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const token = localStorage.getItem("access");
+
   const [campaign, setCampaign] = useState(null);
-  const [form, setForm] = useState({
-    name: "",
-    surname: "",
-    email: "",
-    donation_amount: "",
-    payment_mode: "upi",
-  });
+  const [inCart, setInCart] = useState(false);
 
   useEffect(() => {
+    // Fetch donation campaign details
     API.get(`donations/${id}/`)
       .then((res) => setCampaign(res.data))
-      .catch((err) => console.error(err));
-  }, [id]);
+      .catch((err) => console.error("Error fetching campaign:", err));
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+    // Check if campaign is already in cart
+    if (token) {
+      API.get("cart/")
+        .then((res) => {
+          const cartItems = res.data.results; // ✅ Correctly handle paginated response
+          const exists = cartItems.some(
+            (item) => item.campaign.id === Number(id)
+          );
+          setInCart(exists);
+        })
+        .catch((err) => console.error("Error checking cart:", err));
+    }
+  }, [id, token]);
 
-  const handleDonate = async (e) => {
-    e.preventDefault();
-    try {
-      await API.post("donate/", { ...form, campaign: id });
-      alert("Thank you for your donation!");
-    } catch (err) {
-      console.error("Donation failed", err);
+  const handleCart = async () => {
+    if (!token) {
+      alert("Please login to use cart.");
+      navigate("/login");
+      return;
+    }
+
+    if (inCart) {
+      navigate("/cart");
+    } else {
+      try {
+        console.log("Sending campaign to cart:", parseInt(id));
+        await API.post("cart/", { campaign: Number(id) });
+        setInCart(true);
+        alert("Added to cart!");
+      } catch (err) {
+        const errorData = err.response?.data;
+
+        if (
+          Array.isArray(errorData) &&
+          errorData[0] === "Campaign already in cart."
+        ) {
+          alert("Already in cart. Redirecting...");
+          navigate("/cart");
+        } else {
+          console.error("Error adding to cart:", errorData || err.message);
+          alert("Something went wrong");
+        }
+      }
     }
   };
 
@@ -43,19 +72,15 @@ const DonationDetail = () => {
       <p>Raised: ₹{campaign.raised_amount}</p>
       <p>To Go: ₹{campaign.to_go}</p>
 
+      <button
+        onClick={handleCart}
+        className="bg-[#F74F22] text-white px-4 py-2 my-4 rounded"
+      >
+        {inCart ? "Go to Cart" : "Add to Cart"}
+      </button>
+
       <h3>Donate Now</h3>
-      <form onSubmit={handleDonate}>
-        <input name="name" placeholder="Name" onChange={handleChange} required /><br />
-        <input name="surname" placeholder="Surname" onChange={handleChange} required /><br />
-        <input name="email" placeholder="Email" type="email" onChange={handleChange} required /><br />
-        <input name="donation_amount" placeholder="Amount" type="number" onChange={handleChange} required /><br />
-        <select name="payment_mode" onChange={handleChange}>
-          <option value="upi">UPI</option>
-          <option value="card">Card</option>
-          <option value="paypal">PayPal</option>
-        </select><br />
-        <button type="submit">Donate</button>
-      </form>
+      {/* Add your donation form below if needed */}
     </div>
   );
 };
