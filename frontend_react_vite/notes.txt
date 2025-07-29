@@ -22,6 +22,8 @@ steps for isntall react vite
 
 10) npm install --save @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons
 
+11) "npm install react-icons" for icons
+
 🧹 1. Uninstall Tailwind and Clean Up
 Run this to uninstall the broken version:
 
@@ -78,3 +80,4 @@ npm run dev
 ****MUI installatiom****
 npm install @mui/material @emotion/react @emotion/styled
 npm install @mui/icons-material
+

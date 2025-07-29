@@ -25,6 +25,11 @@ import SearchBar from "./components/searchbar/SearchBar";
 
 import CartPage from "./components/cartcomponent/CartPage";
 
+import SmallHeaderComponent from "./components/smallheadercomponent/smallheadercomponent";
+import Header from "./components/headercomponent/Header";
+import AboutUs from "./components/about_us_component/About_Us";
+import MyProfile from "./components/profilecomponent/MyProfile";
+
 
 import { refreshAccessToken, isTokenExpired } from "./components/base_api/api";
 
@@ -90,6 +95,8 @@ function App() {
   return (
     <>
       <BrowserRouter>
+      <SmallHeaderComponent />
+      <Header/>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route
@@ -113,6 +120,9 @@ function App() {
           <Route path="/donations/search/:query" element={<SearchBar />} />
 
           <Route path="/cart" element={<CartPage />} />
+
+          <Route path="/about" element={<AboutUs />} />
+           <Route path="/profile" element={<MyProfile />} />
 
           <Route
             path="/register"
