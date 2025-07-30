@@ -30,6 +30,7 @@ import Header from "./components/headercomponent/Header";
 import AboutUs from "./components/about_us_component/About_Us";
 import MyProfile from "./components/profilecomponent/MyProfile";
 
+import TabletMobileHeader from "./components/TabletMobileHeaderComponent/TabletMobileHeader";
 
 import { refreshAccessToken, isTokenExpired } from "./components/base_api/api";
 
@@ -95,8 +96,9 @@ function App() {
   return (
     <>
       <BrowserRouter>
-      <SmallHeaderComponent />
-      <Header/>
+        <SmallHeaderComponent />
+        <Header />
+        <TabletMobileHeader />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route
@@ -108,7 +110,10 @@ function App() {
             }
           />
           <Route path="/donations" element={<Donations />} />
-          <Route path="/donations/category/:id" element={<DonationCategory />} />
+          <Route
+            path="/donations/category/:id"
+            element={<DonationCategory />}
+          />
           <Route path="/donations/detail/:id" element={<DonationDetail />} />
 
           {/* 👥 Team routes */}
@@ -122,7 +127,7 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
 
           <Route path="/about" element={<AboutUs />} />
-           <Route path="/profile" element={<MyProfile />} />
+          <Route path="/profile" element={<MyProfile />} />
 
           <Route
             path="/register"

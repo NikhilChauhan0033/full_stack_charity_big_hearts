@@ -67,7 +67,7 @@ const Header = () => {
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     if (token) {
       API.get("cart/").then((res) => {
         const items = res.data.results || res.data;
@@ -78,14 +78,16 @@ const Header = () => {
 
   return (
     <>
-      <div className="hidden xl:flex justify-between items-center px-5 bg-white py-2 shadow-sm relative">
+      <div className="hidden xl:flex justify-between items-center p-5 bg-white shadow-sm relative">
         {/* Logo */}
         <div className="w-[60px]">
+         <Link to="/">
           <img
             src="../../../src/assets/logo.png"
             alt="Logo Big Hearts"
             className="w-full"
           />
+         </Link>
         </div>
 
         {/* Navigation Links */}
@@ -139,8 +141,9 @@ const Header = () => {
           <Link to="/cart">
             <button className="text-[25px] relative">
               <IoCartOutline className="hover:text-[#F74F22]" />
-              <span className="bg-[#F74F22] text-white rounded-full px-1 absolute top-[-14px] right-[-8px] w-[20px] text-[15px] ">{cartCount}</span>
-
+              <span className="bg-[#F74F22] text-white rounded-full px-1 absolute top-[-14px] right-[-8px] w-[20px] text-[15px] ">
+                {cartCount}
+              </span>
             </button>
           </Link>
 
@@ -188,25 +191,24 @@ const Header = () => {
 
         {/* Search Input Box - Absolute Positioned */}
         {showSearch && (
-<div className="absolute right-[200px] top-full mt-2 z-50 w-[350px] bg-white p-7 rounded shadow">
-  <div className="relative">
-    <input
-      type="text"
-      placeholder="Search..."
-      className="w-full border-2 rounded-full px-4 py-3 pr-12 text-[16px]"
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-    />
-    <button
-      onClick={handleSearch}
-      className="absolute right-1 top-1/2 -translate-y-1/2 bg-[#F74F22] text-white p-2 rounded-full text-[22px] hover:bg-orange-600 transition duration-200"
-    >
-      <IoSearch />
-    </button>
-  </div>
-</div>
-
+          <div className="absolute right-[200px] top-full mt-2 z-50 w-[350px] bg-white p-7 rounded shadow">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                className="w-full border-2 rounded-full px-4 py-3 pr-12 text-[16px]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              />
+              <button
+                onClick={handleSearch}
+                className="absolute right-1 top-1/2 -translate-y-1/2 bg-[#F74F22] text-white p-2 rounded-full text-[22px] hover:bg-orange-600 transition duration-200"
+              >
+                <IoSearch />
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </>
