@@ -10,14 +10,15 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material"; // Icons for show/hide password
+import axios from "axios";
 
 function Login() {
   const navigate = useNavigate(); // Used to programmatically navigate user
 
   // Form input values
   const [form, setForm] = useState({
-    identifier: "",   // Can be email or username
-    password: "",     // Password
+    identifier: "", // Can be email or username
+    password: "", // Password
   });
 
   // State for error or success messages
@@ -42,11 +43,14 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent default form refresh
     try {
-      const res = await API.post("login/", form); // POST to /login/ endpoint
+     const res = await axios.post("http://127.0.0.1:8000/api/auth/login/", form);
       // Save JWT tokens and username in localStorage
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
       localStorage.setItem("username", res.data.username);
+
+      // 🛠️ Add a small delay to ensure localStorage is flushed
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
       // Show success message and redirect
       setSuccess("Login successful! Redirecting...");

@@ -8,9 +8,13 @@ import {
 import { FaLocationDot } from "react-icons/fa6";
 import { IoCall } from "react-icons/io5";
 import { SiMinutemailer } from "react-icons/si";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
+import Button from "../buttoncomponent/Button";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const token = localStorage.getItem("access");
+  const navigate = useNavigate();
   const handleDonate = () => {
     if (!token) {
       alert("Please login to donate.");
@@ -24,24 +28,25 @@ const Footer = () => {
       <div className="bg-[#222328] text-white sm:p-16 sm:pb-10 px-5 pt-16 ">
         <div className="flex justify-between items-start flex-wrap">
           <div className="w-[100%] sm:w-[50%] xl:w-[22%] mb-10">
-           <Link to="/">
-            <img
-              src="../../../src/assets/logo1.png"
-              alt="logo big hearts"
-              className="w-[60px] mb-7"
-            />
-           </Link>
+            <Link to="/">
+              <img
+                src="../../../src/assets/logo1.png"
+                alt="logo big hearts"
+                className="w-[60px] mb-7"
+              />
+            </Link>
             <p className="mb-7 w-[90%]">
               We’re curious, passionate, and committed to helping nonprofits
               learn and grow. Donate now!
             </p>
-            <button
+            <Button
               onClick={handleDonate}
-              className="group flex items-center border-2 border-[#FFAC00] px-8 rounded-full py-3 text-[14px] font-semibold text-black hover:bg-[#F74F22] hover:text-white"
-            >
-              DONATE NOW
-              <FaHeart className="ml-3 text-[#F74F22] group-hover:text-white transition duration-200" />
-            </button>
+              className="group flex items-center px-6 rounded-full py-5 text-[15px] font-semibold text-white bg-[#F74F22] hover:text-white hover:bg-[#f7bb22]"
+              text="DONATE NOW"
+              icon={
+                <FaHeart className="ml-2 text-white transition duration-200" />
+              }
+            />
           </div>
           <div className="w-[100%] sm:w-[50%] xl:w-[22%] mb-10">
             <p className="mb-7 text-[20px] font-semibold">Contacts</p>

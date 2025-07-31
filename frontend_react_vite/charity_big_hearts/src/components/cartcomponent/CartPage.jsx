@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import API from "../base_api/api";
 
-const CartPage = () => {
+const CartPage = ({ updateCartCount }) => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,6 +25,7 @@ const CartPage = () => {
     try {
       await API.delete(`cart/${id}/`);
       fetchCart();
+      updateCartCount(); // update header count
       alert("Removed from cart!");
     } catch (error) {
       console.error("Failed to remove item:", error);

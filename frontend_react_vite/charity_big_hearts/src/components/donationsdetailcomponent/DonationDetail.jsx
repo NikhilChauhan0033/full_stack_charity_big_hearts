@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../base_api/api";
 
-const DonationDetail = () => {
+const DonationDetail = ({ updateCartCount }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem("access");
@@ -44,6 +44,7 @@ const DonationDetail = () => {
         console.log("Sending campaign to cart:", parseInt(id));
         await API.post("cart/", { campaign: Number(id) });
         setInCart(true);
+        updateCartCount(); // ✅ call to update count globally
         alert("Added to cart!");
       } catch (err) {
         const errorData = err.response?.data;

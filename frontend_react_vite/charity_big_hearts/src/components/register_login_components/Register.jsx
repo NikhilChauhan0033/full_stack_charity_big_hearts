@@ -9,6 +9,7 @@ import {
   IconButton,
 } from "@mui/material"; // MUI components
 import { Visibility, VisibilityOff } from "@mui/icons-material"; // Eye icons for password toggle
+import axios from "axios"; // Add this line
 
 function Register() {
   const navigate = useNavigate(); // For redirection
@@ -44,7 +45,7 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await API.post("register/", form); // Send form data to backend
+      await axios.post("http://127.0.0.1:8000/api/auth/register/", form);
       setSuccess("Registration successful! Redirecting to login...");
       setSnackbarType("success");
       setOpenSnackbar(true);

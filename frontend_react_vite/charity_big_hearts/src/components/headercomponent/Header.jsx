@@ -1,13 +1,14 @@
 import { IoCartOutline, IoSearch } from "react-icons/io5";
 import { FaHeart } from "react-icons/fa";
 import { MdAccountCircle } from "react-icons/md";
-import { RxCross2 } from "react-icons/rx"; // ❗Cancel icon
+import { RxCross2 } from "react-icons/rx";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { logout } from "../base_api/api";
-import API from "../base_api/api"; // needed for search
+import API from "../base_api/api";
+import Button from "../buttoncomponent/Button";
 
-const Header = () => {
+const Header = ({ cartCount, updateCartCount }) => {
   const navigate = useNavigate();
   const [token, setToken] = useState(localStorage.getItem("access"));
   const username = localStorage.getItem("username");
@@ -15,11 +16,24 @@ const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [cartCount, setCartCount] = useState(0);
+  // ✅ Keep token reactive
+  useEffect(() => {
+    const syncToken = () => {
+      setToken(localStorage.getItem("access"));
+    };
+
+    window.addEventListener("storage", syncToken);
+    const interval = setInterval(syncToken, 1000); // fallback
+
+    return () => {
+      window.removeEventListener("storage", syncToken);
+      clearInterval(interval);
+    };
+  }, []);
 
   const toggleSearch = () => {
     setShowSearch(!showSearch);
-    setSearchTerm(""); // clear when toggled
+    setSearchTerm("");
   };
 
   const handleSearch = async () => {
@@ -60,21 +74,13 @@ const Header = () => {
     try {
       await logout();
       alert("Logged out successfully");
+      localStorage.clear(); // clear all tokens
       setToken(null);
       navigate("/");
     } catch (error) {
       alert("Error during logout");
     }
   };
-
-  useEffect(() => {
-    if (token) {
-      API.get("cart/").then((res) => {
-        const items = res.data.results || res.data;
-        setCartCount(items?.length || 0);
-      });
-    }
-  }, [token]);
 
   const handleDonate = () => {
     if (!token) {
@@ -150,13 +156,12 @@ const Header = () => {
           <Link to="/cart">
             <button className="text-[25px] relative">
               <IoCartOutline className="hover:text-[#F74F22]" />
-              <span className="bg-[#F74F22] text-white rounded-full px-1 absolute top-[-14px] right-[-8px] w-[20px] text-[15px] ">
+              <span className="bg-[#F74F22] text-white rounded-full px-1 absolute top-[-14px] right-[-8px] w-[20px] text-[15px]">
                 {cartCount}
               </span>
             </button>
           </Link>
 
-          {/* Search Toggle */}
           <button className="text-[25px]" onClick={toggleSearch}>
             {showSearch ? (
               <RxCross2 className="hover:text-[#F74F22] mb-1" />
@@ -174,14 +179,15 @@ const Header = () => {
           )}
         </div>
 
-        {/* Donate Button */}
-        <button
+        {/* Donate reusable Button */}
+        <Button
           onClick={handleDonate}
           className="group flex items-center border-2 border-[#FFAC00] px-8 rounded-full py-3 text-[14px] font-semibold text-black hover:bg-[#F74F22] hover:text-white"
-        >
-          DONATE NOW
-          <FaHeart className="ml-3 text-[#F74F22] group-hover:text-white transition duration-200" />
-        </button>
+          text="DONATE NOW"
+          icon={
+            <FaHeart className="ml-3 text-[#F74F22] group-hover:text-white transition duration-200" />
+          }
+        />
 
         {/* Auth Buttons */}
         {token ? (
@@ -199,7 +205,7 @@ const Header = () => {
           </Link>
         )}
 
-        {/* Search Input Box - Absolute Positioned */}
+        {/* Search Input Box */}
         {showSearch && (
           <div className="absolute right-[200px] top-full mt-2 z-50 w-[350px] bg-white p-7 rounded shadow">
             <div className="relative">
