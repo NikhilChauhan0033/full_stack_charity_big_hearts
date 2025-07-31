@@ -21,7 +21,6 @@ import TeamDetail from "./components/team/TeamDetail";
 
 import Contact from "./components/contactcomponent/Contact";
 
-import SearchBar from "./components/searchbar/SearchBar";
 
 import CartPage from "./components/cartcomponent/CartPage";
 
@@ -31,6 +30,8 @@ import AboutUs from "./components/about_us_component/About_Us";
 import MyProfile from "./components/profilecomponent/MyProfile";
 
 import TabletMobileHeader from "./components/TabletMobileHeaderComponent/TabletMobileHeader";
+
+import Footer from "./components/footercomponent/Footer";
 
 import { refreshAccessToken, isTokenExpired } from "./components/base_api/api";
 
@@ -122,7 +123,6 @@ function App() {
 
           <Route path="/contact" element={<Contact />} />
 
-          <Route path="/donations/search/:query" element={<SearchBar />} />
 
           <Route path="/cart" element={<CartPage />} />
 
@@ -146,6 +146,7 @@ function App() {
             }
           />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </>
   );

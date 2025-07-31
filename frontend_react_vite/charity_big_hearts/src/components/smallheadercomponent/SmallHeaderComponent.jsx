@@ -49,14 +49,14 @@ const SmallHeaderComponent = () => {
           <span className="mx-3 text-[#F74F22]">●</span> Calling All Climate
           Champions To Apply
         </p>
-        <p className="flex items-center">
+        <p className="flex items-center group">
             <span className="mr-2 text-[#595959]">●</span>
-          <FaLocationDot className="text-[#F74F22] text-[19px] mr-1 hover:text-[#f7bb22] transition duration-500 ease-in-out" />
+          <FaLocationDot className="text-[#F74F22] text-[19px] mr-1 group-hover:text-[#f7bb22] transition duration-500 ease-in-out" />
           92 Bowery St., New York, NY 10013
         </p>
-        <p className="flex items-center">
+        <p className="flex items-center group">
             <span className="mr-2 text-[#595959]">●</span>
-          <IoCall className="text-[#F74F22] text-[19px] mr-1 hover:text-[#f7bb22] transition duration-500 ease-in-out" />
+          <IoCall className="text-[#F74F22] text-[19px] mr-1 group-hover:text-[#f7bb22] transition duration-500 ease-in-out" />
           +1 800 123 456 789
         </p>
         <div className="flex justify-between items-center">

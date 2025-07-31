@@ -76,18 +76,27 @@ const Header = () => {
     }
   }, [token]);
 
+  const handleDonate = () => {
+    if (!token) {
+      alert("Please login to donate.");
+      navigate("/login");
+    } else {
+      navigate("/donations");
+    }
+  };
+
   return (
     <>
       <div className="hidden xl:flex justify-between items-center p-5 bg-white shadow-sm relative">
         {/* Logo */}
         <div className="w-[60px]">
-         <Link to="/">
-          <img
-            src="../../../src/assets/logo.png"
-            alt="Logo Big Hearts"
-            className="w-full"
-          />
-         </Link>
+          <Link to="/">
+            <img
+              src="../../../src/assets/logo.png"
+              alt="Logo Big Hearts"
+              className="w-full"
+            />
+          </Link>
         </div>
 
         {/* Navigation Links */}
@@ -166,12 +175,13 @@ const Header = () => {
         </div>
 
         {/* Donate Button */}
-        <NavLink to="/donations">
-          <button className="group flex items-center border-2 border-[#FFAC00] px-8 rounded-full py-3 text-[14px] font-semibold text-black hover:bg-[#F74F22] hover:text-white">
-            DONATE NOW
-            <FaHeart className="ml-3 text-[#F74F22] group-hover:text-white transition duration-200" />
-          </button>
-        </NavLink>
+        <button
+          onClick={handleDonate}
+          className="group flex items-center border-2 border-[#FFAC00] px-8 rounded-full py-3 text-[14px] font-semibold text-black hover:bg-[#F74F22] hover:text-white"
+        >
+          DONATE NOW
+          <FaHeart className="ml-3 text-[#F74F22] group-hover:text-white transition duration-200" />
+        </button>
 
         {/* Auth Buttons */}
         {token ? (

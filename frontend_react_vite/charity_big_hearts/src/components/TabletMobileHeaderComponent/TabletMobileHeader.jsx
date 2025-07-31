@@ -7,6 +7,7 @@ import { MdAccountCircle } from "react-icons/md";
 import Drawer from "@mui/material/Drawer";
 import API from "../base_api/api";
 import { useNavigate, NavLink, Link } from "react-router-dom";
+import { logout } from "../base_api/api";
 
 const TabletMobileHeader = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -70,6 +71,20 @@ const TabletMobileHeader = () => {
       });
     }
   }, [token]);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      alert("Logged out successfully");
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      localStorage.removeItem("username");
+      navigate("/");
+      setDrawerOpen(false);
+    } catch (error) {
+      alert("Error during logout");
+    }
+  };
 
   return (
     <>
@@ -233,6 +248,25 @@ const TabletMobileHeader = () => {
                 className="text-[28px]"
               >
                 <MdAccountCircle className="hover:text-[#F74F22]" />
+              </button>
+            )}
+          </div>
+          <div className="mt-8 px-6">
+            {token ? (
+              <button
+                onClick={handleLogout}
+                className="w-full bg-[#F74F22] text-white text-[16px] font-medium py-3 rounded-md hover:bg-[#d84315]"
+              >
+                Logout
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  handleNavClick("/login");
+                }}
+                className="w-full bg-[#F74F22] text-white text-[16px] font-medium py-3 rounded-md hover:bg-[#d84315]"
+              >
+                Login / Register
               </button>
             )}
           </div>
