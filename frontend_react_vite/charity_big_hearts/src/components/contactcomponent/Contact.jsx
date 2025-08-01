@@ -35,6 +35,7 @@ const Contact = () => {
 
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: '500px', margin: '0 auto' }}>
+      <title>Contact Us - BigHearts</title>
       <h2>Contact Us</h2>
 
       <input

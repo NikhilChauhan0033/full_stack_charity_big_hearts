@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import API from '../base_api/api';
+import FullPageLoader from '../loader/FullPageLoader';
 
 const TeamDetail = () => {
   const { id } = useParams();
@@ -14,6 +15,9 @@ const TeamDetail = () => {
     const fetchTeamMemberDetail = async () => {
       try {
         setLoading(true);
+
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
+
         const response = await API.get(`team/${id}/`);
         setTeamMember(response.data);
         console.log('✅ Team member detail fetched:', response.data);
@@ -34,13 +38,7 @@ const TeamDetail = () => {
     }
   }, [id]);
 
-  if (loading) {
-    return (
-      <div>
-        <div>Loading team member details...</div>
-      </div>
-    );
-  }
+  if (loading) return <FullPageLoader />;
 
   if (error) {
     return (
@@ -53,6 +51,7 @@ const TeamDetail = () => {
 
   return (
     <div>
+      <title>Team Member Detail - BigHearts</title>
       <button onClick={() => navigate('/team')}>← Back to Team</button>
 
       <div>

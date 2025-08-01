@@ -11,7 +11,7 @@ import Donate from "./components/donationcomponent/Donate";
 import ProtectedRoute from "./components/protectprivatecomponent/ProtectedRoute";
 import RedirectIfAuth from "./components/protectprivatecomponent/RedirectIfAuth";
 
-import Donations from "./components/donationscomponent/donations";
+import Donations from "./components/donationscomponent/Donations";
 import DonationCategory from "./components/donationscategorycomponent/DonationCategory";
 import DonationDetail from "./components/donationsdetailcomponent/DonationDetail";
 
@@ -33,12 +33,15 @@ import API from "./components/base_api/api";
 // Wrapper component for layout control
 function LayoutWrapper({ cartCount, updateCartCount }) {
   const location = useLocation();
-  const hideLayout = location.pathname === "/login" || location.pathname === "/register";
+  const hideLayout =
+    location.pathname === "/login" || location.pathname === "/register";
 
   return (
     <>
       {!hideLayout && <SmallHeaderComponent />}
-      {!hideLayout && <Header cartCount={cartCount} updateCartCount={updateCartCount} />}
+      {!hideLayout && (
+        <Header cartCount={cartCount} updateCartCount={updateCartCount} />
+      )}
       {!hideLayout && <TabletMobileHeader />}
 
       <Routes>
@@ -60,7 +63,10 @@ function LayoutWrapper({ cartCount, updateCartCount }) {
         <Route path="/team" element={<Team />} />
         <Route path="/team/:id" element={<TeamDetail />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/cart" element={<CartPage updateCartCount={updateCartCount} />} />
+        <Route
+          path="/cart"
+          element={<CartPage updateCartCount={updateCartCount} />}
+        />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/profile" element={<MyProfile />} />
         <Route

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../base_api/api";
+import FullPageLoader from "../loader/FullPageLoader"; // 👈 import loader
 
 const DonationDetail = ({ updateCartCount }) => {
   const { id } = useParams();
@@ -9,25 +10,31 @@ const DonationDetail = ({ updateCartCount }) => {
 
   const [campaign, setCampaign] = useState(null);
   const [inCart, setInCart] = useState(false);
+  const [loading, setLoading] = useState(true); // 👈 loader state
 
   useEffect(() => {
-    // Fetch donation campaign details
-    API.get(`donations/${id}/`)
-      .then((res) => setCampaign(res.data))
-      .catch((err) => console.error("Error fetching campaign:", err));
+    const fetchCampaignDetails = async () => {
+      try {
+        setLoading(true); // 👈 start loader
+        const res = await API.get(`donations/${id}/`);
+        setCampaign(res.data);
 
-    // Check if campaign is already in cart
-    if (token) {
-      API.get("cart/")
-        .then((res) => {
-          const cartItems = res.data.results; // ✅ Correctly handle paginated response
+        if (token) {
+          const cartRes = await API.get("cart/");
+          const cartItems = cartRes.data.results;
           const exists = cartItems.some(
             (item) => item.campaign.id === Number(id)
           );
           setInCart(exists);
-        })
-        .catch((err) => console.error("Error checking cart:", err));
-    }
+        }
+      } catch (err) {
+        console.error("Error loading donation detail or cart:", err);
+      } finally {
+        setLoading(false); // 👈 stop loader
+      }
+    };
+
+    fetchCampaignDetails();
   }, [id, token]);
 
   const handleCart = async () => {
@@ -41,14 +48,12 @@ const DonationDetail = ({ updateCartCount }) => {
       navigate("/cart");
     } else {
       try {
-        console.log("Sending campaign to cart:", parseInt(id));
         await API.post("cart/", { campaign: Number(id) });
         setInCart(true);
-        updateCartCount(); // ✅ call to update count globally
+        updateCartCount();
         alert("Added to cart!");
       } catch (err) {
         const errorData = err.response?.data;
-
         if (
           Array.isArray(errorData) &&
           errorData[0] === "Campaign already in cart."
@@ -63,10 +68,12 @@ const DonationDetail = ({ updateCartCount }) => {
     }
   };
 
-  if (!campaign) return <p>Loading...</p>;
+  // 🔄 Show loader until data is ready
+  if (loading) return <FullPageLoader />;
 
   return (
     <div style={{ padding: "20px" }}>
+      <title>Donation Detail - BigHearts</title>
       <h2>{campaign.title}</h2>
       <img src={campaign.image} alt={campaign.title} width="300" />
       <p>Goal: ₹{campaign.goal_amount}</p>
@@ -81,7 +88,7 @@ const DonationDetail = ({ updateCartCount }) => {
       </button>
 
       <h3>Donate Now</h3>
-      {/* Add your donation form below if needed */}
+      {/* You can add a donation form or Razorpay integration here later */}
     </div>
   );
 };

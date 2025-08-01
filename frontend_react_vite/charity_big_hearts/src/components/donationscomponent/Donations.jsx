@@ -1,52 +1,67 @@
-// src/components/donationcomponent/Donations.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../base_api/api";
+import FullPageLoader from "../loader/FullPageLoader";
 
 const Donations = () => {
   const [categories, setCategories] = useState([]);
   const [campaigns, setCampaigns] = useState([]);
   const [nextPage, setNextPage] = useState(null);
   const [prevPage, setPrevPage] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅ Add loading state
   const navigate = useNavigate();
 
-  const fetchCampaigns = (url = "donations/") => {
-    API.get(url)
-      .then((res) => {
-        if (Array.isArray(res.data.results)) {
-          setCampaigns(res.data.results);
-          setNextPage(res.data.next);
-          setPrevPage(res.data.previous);
-        } else {
-          console.error("Campaigns response is not an array:", res.data);
-          setCampaigns([]);
-        }
-      })
-      .catch((err) => {
-        console.error("Campaign error:", err);
+  const fetchCampaigns = async (url = "donations/") => {
+    setLoading(true); // ✅ Start loader
+    try {
+      // Simulate delay for testing loader
+      await new Promise((res) => setTimeout(res, 2000));
+
+      const res = await API.get(url);
+      if (Array.isArray(res.data.results)) {
+        setCampaigns(res.data.results);
+        setNextPage(res.data.next);
+        setPrevPage(res.data.previous);
+      } else {
+        console.error("Campaigns response is not an array:", res.data);
         setCampaigns([]);
-      });
+      }
+    } catch (err) {
+      console.error("Campaign error:", err);
+      setCampaigns([]);
+    } finally {
+      setLoading(false); // ✅ End loader
+    }
   };
 
   useEffect(() => {
-    // Fetch categories
-    API.get("categories/")
-      .then((res) => {
-        if (Array.isArray(res.data.results)) {
-          setCategories(res.data.results);
-          
+    const fetchAll = async () => {
+      setLoading(true); // ✅ Start loader
+
+      try {
+        // Simulate delay for testing loader
+        // await new Promise((res) => setTimeout(res, 1000));
+
+        // Fetch categories
+        const catRes = await API.get("categories/");
+        if (Array.isArray(catRes.data.results)) {
+          setCategories(catRes.data.results);
         } else {
-          console.error("Categories response is not an array:", res.data);
+          console.error("Categories response is not an array:", catRes.data);
           setCategories([]);
         }
-      })
-      .catch((err) => {
+
+        // Fetch campaigns
+        await fetchCampaigns();
+      } catch (err) {
         console.error("Category error:", err);
         setCategories([]);
-      });
+      } finally {
+        setLoading(false); // ✅ End loader
+      }
+    };
 
-    // Fetch campaigns
-    fetchCampaigns();
+    fetchAll();
   }, []);
 
   const handleCategoryClick = (categoryId) => {
@@ -57,8 +72,15 @@ const Donations = () => {
     navigate(`/donations/detail/${id}`);
   };
 
+  // ✅ Render loader if loading
+  if (loading) {
+    return <FullPageLoader />;
+  }
+
   return (
     <div style={{ padding: "20px" }}>
+      <title>Donations - BigHearts</title>
+
       <h1>Donations</h1>
 
       <h3>Filter by Category</h3>
