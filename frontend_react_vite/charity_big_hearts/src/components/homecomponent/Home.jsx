@@ -1,4 +1,5 @@
-
+import Slide_Carousel_Home from "../slide_carousel_home_component/slide_carousel_home";
+import Home_Category_Second from "../home_category_secons_componenet/home_category_second";
 const Home = () => {
   
   const token = localStorage.getItem("access");
@@ -8,9 +9,10 @@ const Home = () => {
   return (
     <>
     <title>Home - BigHearts</title>
-      {token && username && <h1>Welcome, {username}!</h1>}
-      <h2>Welcome to Home</h2>
-      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Neque optio nihil qui illum obcaecati voluptates similique ex, molestias rem ut consectetur nisi distinctio quam quo sequi laborum minus maiores voluptatibus.</p>
+      {/* {token && username && <h1>Welcome, {username}!</h1>} */}
+
+    <Slide_Carousel_Home/>
+    <Home_Category_Second/>
   
     </>
   );
