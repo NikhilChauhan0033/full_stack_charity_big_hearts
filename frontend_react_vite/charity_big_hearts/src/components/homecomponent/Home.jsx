@@ -5,6 +5,7 @@ import Category_Home from "../category_home_component/Category_Home";
 import Fifth_Home from "../fifth_home_component/Fifth_Home";
 import All_Category_Home from "../all_category_home_component/All_Category_Home";
 import Mission_Vision_Values from "../mission_vision_values_component/Mission_Vision_Values";
+import Donations_Cards from "../donations_cards_component/Donations_Cards";
 const Home = () => {
   
   const token = localStorage.getItem("access");
@@ -23,6 +24,7 @@ const Home = () => {
     <Fifth_Home/>
     <All_Category_Home/>
     <Mission_Vision_Values/>
+    <Donations_Cards/>
     </>
   );
 };
