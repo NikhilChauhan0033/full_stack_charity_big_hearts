@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
 const imageData = [
   {
@@ -92,27 +93,34 @@ const All_Category_Home = () => {
         {imageData.map((item, index) => (
           <div
             key={index}
-            className="relative overflow-hidden group w-[300px] h-[260px] cursor-pointer flex-shrink-0"
+            className="relative overflow-hidden group w-[275px] h-[260px] cursor-pointer flex-shrink-0"
           >
             {/* Image */}
-            <img
-              src={item.src}
-              alt={item.title}
-              className="w-full h-full object-cover transition-all duration-500 group-hover:filter group-hover:grayscale"
-            />
+            <Link to="/donations">
+              <img
+                src={item.src}
+                alt={item.title}
+                className="w-full h-full object-cover transition-all duration-500 group-hover:filter group-hover:grayscale"
+              />
 
-            {/* Shutter Overlay */}
-            <div
-              className="absolute bottom-[-50%] left-0 w-full h-1/2 bg-[#FD853E] text-white 
+              {/* Shutter Overlay */}
+              <div
+                className="absolute bottom-[-50%] left-0 w-full h-1/2 bg-[#FD853E] text-white 
                flex flex-col justify-center pl-6 transition-all duration-500 group-hover:bottom-0"
-            >
-              <p className="text-2xl font-semibold">{item.title}</p>
-              <p style={{ fontFamily: '"Amatic SC", cursive' }} className="text-lg mt-1">#{item.p}</p>
-            </div>
+              >
+                <p className="text-2xl font-semibold">{item.title}</p>
+                <p
+                  style={{ fontFamily: '"Amatic SC", cursive' }}
+                  className="text-lg mt-1"
+                >
+                  #{item.p}
+                </p>
+              </div>
+            </Link>
           </div>
         ))}
       </div>
-      
+
       <style jsx>{`
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
