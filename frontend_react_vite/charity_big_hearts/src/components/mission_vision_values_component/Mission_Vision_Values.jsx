@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
+import Button from "../buttoncomponent/Button";
+import { useNavigate } from "react-router-dom";
 
 const Mission_Vision_Values = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const navigate = useNavigate();
+  const [token, setToken] = useState(localStorage.getItem("access"));
 
   const [missionStats, setMissionStats] = useState({
     percent: 0,
@@ -51,6 +55,15 @@ const Mission_Vision_Values = () => {
       return () => clearInterval(interval);
     }
   }, [activeTab]);
+
+  const handleDonate = () => {
+    if (!token) {
+      alert("Please login to donate.");
+      navigate("/login");
+    } else {
+      navigate("/donations");
+    }
+  };
 
   return (
     <>
@@ -169,7 +182,9 @@ const Mission_Vision_Values = () => {
                   <h3 className="text-xl sm:text-2xl xl:text-3xl font-bold">
                     {missionStats.percent}%
                   </h3>
-                  <p className="text-xs sm:text-sm xl:text-base">KIDS NEED HELP</p>
+                  <p className="text-xs sm:text-sm xl:text-base">
+                    KIDS NEED HELP
+                  </p>
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl sm:text-2xl xl:text-3xl font-bold">
@@ -184,10 +199,12 @@ const Mission_Vision_Values = () => {
                   <p className="text-xs sm:text-sm xl:text-base">VOLUNTEERS</p>
                 </div>
               </div>
-
-              <button className="bg-[#E3491D] text-white font-semibold py-3 px-6 xl:py-4 xl:px-8 rounded-full hover:bg-white hover:text-black text-sm xl:text-base w-full sm:w-auto">
-                DONATE NOW
-              </button>
+              <Button
+                onClick={handleDonate}
+                className="bg-[#E3491D] text-white font-semibold py-3 px-6 xl:py-4 xl:px-8 rounded-full hover:bg-white hover:text-black text-sm xl:text-base w-full sm:w-auto"
+                text="DONATE NOW"
+                icon={null}
+              />
             </div>
           )}
 
@@ -209,7 +226,9 @@ const Mission_Vision_Values = () => {
               </p>
 
               <div className="mb-6">
-                <p className="font-bold mb-1 text-sm xl:text-base">COMPLETED PROGRAM</p>
+                <p className="font-bold mb-1 text-sm xl:text-base">
+                  COMPLETED PROGRAM
+                </p>
                 <div className="w-full bg-white/40 h-2 rounded-full relative">
                   <div
                     className="bg-white h-2 rounded-full absolute top-0 left-0"
@@ -222,7 +241,9 @@ const Mission_Vision_Values = () => {
               </div>
 
               <div className="mb-6 xl:mb-10">
-                <p className="font-bold mb-1 text-sm xl:text-base">PROGRAM FOR THIS MONTH</p>
+                <p className="font-bold mb-1 text-sm xl:text-base">
+                  PROGRAM FOR THIS MONTH
+                </p>
                 <div className="w-full bg-white/40 h-2 rounded-full relative">
                   <div
                     className="bg-white h-2 rounded-full absolute top-0 left-0"
@@ -233,9 +254,12 @@ const Mission_Vision_Values = () => {
                   {visionProgress.two}%
                 </p>
               </div>
-              <button className="bg-white text-black font-semibold py-3 px-6 xl:py-4 xl:px-8 rounded-full hover:bg-transparent hover:text-white border-2 border-white text-sm xl:text-base w-full sm:w-auto">
-                DONATE NOW
-              </button>
+              <Button
+                onClick={handleDonate}
+                className="bg-white text-black font-semibold py-3 px-6 xl:py-4 xl:px-8 rounded-full hover:bg-transparent hover:text-white border-2 border-white text-sm xl:text-base w-full sm:w-auto"
+                text="DONATE NOW"
+                icon={null}
+              />
             </div>
           )}
 
@@ -263,7 +287,9 @@ const Mission_Vision_Values = () => {
                 <div className="w-full bg-white/40 h-2 rounded-full relative">
                   <div className="bg-white h-2 rounded-full absolute top-0 left-0 w-[94%]"></div>
                 </div>
-                <p className="text-right mt-1 font-bold text-sm xl:text-base">94%</p>
+                <p className="text-right mt-1 font-bold text-sm xl:text-base">
+                  94%
+                </p>
               </div>
 
               {/* Stats Below Progress */}
@@ -281,9 +307,12 @@ const Mission_Vision_Values = () => {
                   <p>$2,755</p>
                 </div>
               </div>
-              <button className="bg-white text-black font-semibold py-3 px-6 xl:py-4 xl:px-8 rounded-full hover:bg-transparent hover:text-white border-2 border-white text-sm xl:text-base w-full sm:w-auto">
-                DONATE NOW
-              </button>
+              <Button
+                onClick={handleDonate}
+                className="bg-white text-black font-semibold py-3 px-6 xl:py-4 xl:px-8 rounded-full hover:bg-transparent hover:text-white border-2 border-white text-sm xl:text-base w-full sm:w-auto"
+                text="DONATE NOW"
+                icon={null}
+              />
             </div>
           )}
         </div>

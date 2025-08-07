@@ -6,6 +6,16 @@ import Fifth_Home from "../fifth_home_component/Fifth_Home";
 import All_Category_Home from "../all_category_home_component/All_Category_Home";
 import Mission_Vision_Values from "../mission_vision_values_component/Mission_Vision_Values";
 import Donations_Cards from "../donations_cards_component/Donations_Cards";
+import bgImage from "../../../src/assets/home-bg2.jpg"
+const partnerImages = [
+  "partners_01.png",
+  "partners_02.png",
+  "partners_03.png",
+  "partners_04.png",
+  "partners_05.png",
+  "partners_06.png",
+];
+
 const Home = () => {
   
   const token = localStorage.getItem("access");
@@ -21,10 +31,10 @@ const Home = () => {
     <Home_Category_Second/>
     <Third_Home/>
     <Category_Home/>
-    <Fifth_Home/>
-    <All_Category_Home/>
-    <Mission_Vision_Values/>
+    <Fifth_Home bgImage={bgImage} bgColor={null} partnerImages={partnerImages} />
     <Donations_Cards/>
+    <Mission_Vision_Values/>
+    <All_Category_Home/>
     </>
   );
 };

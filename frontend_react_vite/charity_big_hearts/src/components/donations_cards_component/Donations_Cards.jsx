@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import API from "../base_api/api";
 import FullPageLoader from "../loader/FullPageLoader";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
+import Button from "../buttoncomponent/Button";
 
 const Donations_Cards = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -11,6 +12,7 @@ const Donations_Cards = () => {
   const containerRef = useRef(null);
   const navigate = useNavigate();
   const scrollIntervalRef = useRef(null);
+  const [token, setToken] = useState(localStorage.getItem("access"));
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,6 +101,15 @@ const Donations_Cards = () => {
 
   const handleCardClick = (id) => {
     navigate(`/donations/detail/${id}`);
+  };
+
+  const handleDonate = () => {
+    if (!token) {
+      alert("Please login to donate.");
+      navigate("/login");
+    } else {
+      navigate("/donations");
+    }
   };
 
   if (loading) return <FullPageLoader />;
@@ -231,12 +242,12 @@ const Donations_Cards = () => {
 
         {/* View More Button */}
         <div className="text-center mt-6">
-          <button
-            onClick={() => navigate("/donations")}
+          <Button
+            onClick={handleDonate}
             className="bg-[#f74f22] hover:bg-[#e14417] font-semibold text-white text-sm px-6 py-3 rounded-full shadow-md transition"
-          >
-            View More Donations
-          </button>
+            text="View More Donations"
+            icon={null}
+          />
         </div>
       </div>
     </div>

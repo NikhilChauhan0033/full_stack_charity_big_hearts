@@ -1,15 +1,8 @@
 import { useEffect, useRef } from "react";
 
-const partnerImages = [
-  "partners_01.png",
-  "partners_02.png",
-  "partners_03.png",
-  "partners_04.png",
-  "partners_05.png",
-  "partners_06.png",
-];
 
-const Fifth_Home = () => {
+
+const Fifth_Home = ({bgImage,bgColor,partnerImages}) => {
   const scrollContainerRef = useRef(null);
   const intervalRef = useRef(null);
 
@@ -63,7 +56,7 @@ const Fifth_Home = () => {
   }, []);
 
   return (
-    <div className="bg-[url(../../../src/assets/home-bg2.jpg)]  overflow-hidden">
+    <div style={{ backgroundImage: `url(${bgImage})`, backgroundColor:`${bgColor}`}} className="overflow-hidden">
       <div
         ref={scrollContainerRef}
         className="flex xl:justify-between items-center gap-10 whitespace-nowrap 
