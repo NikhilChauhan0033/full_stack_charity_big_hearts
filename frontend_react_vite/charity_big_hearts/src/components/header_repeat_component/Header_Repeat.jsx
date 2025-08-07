@@ -1,7 +1,7 @@
 import { IoIosArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom";
 
-const Header_Repeat = ({ bgImage, Title, smallTitle }) => {
+const Header_Repeat = ({ bgImage, Title,smallTitle, currentPage, secondlocate }) => {
   return (
     <div
       className="w-full h-[60vh] bg-cover bg-center text-white flex flex-col items-center justify-center text-center px-4"
@@ -13,7 +13,15 @@ const Header_Repeat = ({ bgImage, Title, smallTitle }) => {
           Home
         </Link>
         <IoIosArrowForward className="text-[14px] mx-[10px]" />
-        <span className="text-[#ffac00]">{smallTitle}</span>
+        <Link to={`${secondlocate}`} className="text-[#ffac00] duration-200">
+          {smallTitle}
+        </Link>
+        {currentPage && (
+          <>
+            <IoIosArrowForward className="text-[14px] mx-[10px]" />
+            <span className="text-[#ffac00]">{currentPage}</span>
+          </>
+        )}
       </p>
     </div>
   );

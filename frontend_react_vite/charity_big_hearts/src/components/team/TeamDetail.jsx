@@ -1,8 +1,18 @@
-// components/teamdetailcomponent/TeamDetail.jsx
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import API from '../base_api/api';
-import FullPageLoader from '../loader/FullPageLoader';
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import API from "../base_api/api";
+import FullPageLoader from "../loader/FullPageLoader";
+import Header_Repeat from "../header_repeat_component/Header_Repeat";
+import bgImage from "../../../src/assets/pagetitle_team.jpg";
+import bgTeamImage from "../../../src/assets/team_bg.jpg";
+import { IoIosArrowForward } from "react-icons/io";
+
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+  FaInstagram,
+} from "react-icons/fa";
 
 const TeamDetail = () => {
   const { id } = useParams();
@@ -12,112 +22,114 @@ const TeamDetail = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchTeamMemberDetail = async () => {
+    const fetchTeamMember = async () => {
       try {
         setLoading(true);
-
-        // await new Promise((resolve) => setTimeout(resolve, 1000));
-
         const response = await API.get(`team/${id}/`);
         setTeamMember(response.data);
-        console.log('✅ Team member detail fetched:', response.data);
       } catch (err) {
-        console.error('❌ Error fetching team member detail:', err);
-        if (err.response?.status === 404) {
-          setError('Team member not found.');
-        } else {
-          setError('Failed to load team member details. Please try again.');
-        }
+        setError("Failed to load team member details.");
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchTeamMemberDetail();
-    }
+    fetchTeamMember();
   }, [id]);
 
   if (loading) return <FullPageLoader />;
-
-  if (error) {
-    return (
-      <div>
-        <div>{error}</div>
-        <button onClick={() => navigate('/team')}>Back to Team</button>
-      </div>
-    );
-  }
+  if (error) return <div className="text-center text-red-600">{error}</div>;
+  if (!teamMember) return null;
 
   return (
-    <div>
+    <>
       <title>Team Member Detail - BigHearts</title>
-      <button onClick={() => navigate('/team')}>← Back to Team</button>
+      <Header_Repeat
+        bgImage={bgImage}
+        secondlocate="/team"
+        Title="Team"
+        smallTitle="team"
+        currentPage={teamMember.name}
+      />
 
-      <div>
-        <div>
-          {teamMember.image && (
-            <div>
-              <img
-                src={teamMember.image}
-                alt={teamMember.name || 'Team member'}
-                style={{ width: '100px' }} // 👈 added only this style
-              />
+      <div className="px-3 py-10 md:p-14">
+        <div
+          className="p-6 sm:p-10 w-full h-full bg-cover bg-center rounded-xl flex flex-col md:flex-row items-center md:items-start justify-center gap-10"
+          style={{ backgroundImage: `url(${bgTeamImage})` }}
+        >
+          {/* Image Section */}
+          <div className="w-full md:w-[40%] flex justify-center">
+            <img
+              src={teamMember.image}
+              alt={teamMember.name}
+              className="w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[400px] md:h-[400px] object-cover rounded-full shadow-lg"
+            />
+          </div>
+
+          {/* Text Section */}
+          <div className="w-full md:w-[60%] text-center md:text-left flex flex-col items-center md:items-start">
+            <p className="text-3xl font-bold mb-2">{teamMember.name}</p>
+            <p className="text-[#F74F22] font-medium text-lg mb-4">
+              {teamMember.role || "Volunteer"}
+            </p>
+            {teamMember.small_description && (
+              <p className="text-gray-600 mb-6 max-w-lg">
+                {teamMember.small_description}
+              </p>
+            )}
+
+            <div className="space-y-5 text-center md:text-left">
+              {teamMember.experience && (
+                <p className="text-gray-600">
+                  <strong className="text-black mr-2">Experience: </strong>{" "}
+                  {teamMember.experience}
+                </p>
+              )}
+              {teamMember.email && (
+                <p className="text-gray-600">
+                  <strong className="text-black mr-2">Email: </strong>{" "}
+                  {teamMember.email}
+                </p>
+              )}
+              {teamMember.phone_no && (
+                <p className="text-gray-600">
+                  <strong className="text-black mr-2">Phone: </strong>{" "}
+                  {teamMember.phone_no}
+                </p>
+              )}
             </div>
-          )}
 
-          <div>
-            <h1>{teamMember.name || 'No Name'}</h1>
-
-            {teamMember.position && <p>{teamMember.position}</p>}
-            {teamMember.email && <p>Email: {teamMember.email}</p>}
-            {teamMember.phone && <p>Phone: {teamMember.phone}</p>}
-            {teamMember.description && (
-              <div>
-                <h3>About</h3>
-                <p>{teamMember.description}</p>
-              </div>
-            )}
-            {teamMember.experience && (
-              <div>
-                <h3>Experience</h3>
-                <p>{teamMember.experience} years</p>
-              </div>
-            )}
-            {teamMember.skills && (
-              <div>
-                <h3>Skills</h3>
-                <ul>
-                  {teamMember.skills.split(',').map((skill, index) => (
-                    <li key={index}>{skill.trim()}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {(teamMember.linkedin || teamMember.twitter || teamMember.facebook) && (
-              <div>
-                <h3>Connect</h3>
-                {teamMember.linkedin && (
-                  <a href={teamMember.linkedin} target="_blank" rel="noopener noreferrer">
-                    LinkedIn
-                  </a>
-                )}
-                {teamMember.twitter && (
-                  <a href={teamMember.twitter} target="_blank" rel="noopener noreferrer">
-                    Twitter
-                  </a>
-                )}
-                {teamMember.facebook && (
-                  <a href={teamMember.facebook} target="_blank" rel="noopener noreferrer">
-                    Facebook
-                  </a>
-                )}
-              </div>
-            )}
+            {/* Social Icons */}
+            <div className="flex justify-center md:justify-start mt-6 gap-4">
+              <a
+                href="#"
+                className="p-3 rounded-full border border-[#ffac00] hover:bg-[#ffac00] hover:text-white transition"
+              >
+                <FaTwitter />
+              </a>
+              <a
+                href="#"
+                className="p-3 rounded-full border border-[#ffac00] hover:bg-[#ffac00] hover:text-white transition"
+              >
+                <FaFacebookF />
+              </a>
+              <a
+                href="#"
+                className="p-3 rounded-full border border-[#ffac00] hover:bg-[#ffac00] hover:text-white transition"
+              >
+                <FaLinkedinIn />
+              </a>
+              <a
+                href="#"
+                className="p-3 rounded-full border border-[#ffac00] hover:bg-[#ffac00] hover:text-white transition"
+              >
+                <FaInstagram />
+              </a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

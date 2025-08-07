@@ -160,7 +160,7 @@ const Team = () => {
                     {/* Signature */}
                     <div className="flex items-center justify-between">
                       <p className="text-gray-500 text-base font-medium">
-                        Volunteer
+                        {member.role}
                       </p>
                       <p className="text-[#F74F22] font-bold text-xl italic">
                         {member.signature ||
