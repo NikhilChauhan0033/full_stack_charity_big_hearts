@@ -10,6 +10,7 @@ import fifthBGImage from "../../../src/assets/home-bg2.jpg";
 import React from "react";
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
+import helpBGImage from "../../../src/assets/bg-aboutUs.jpg";
 
 const partnerImages = [
   "partners_01.png",
@@ -95,10 +96,83 @@ const AboutUs = () => {
             </div>
           </div>
         </div>
-        <div>
+
+        <div
+          style={{ backgroundImage: `url(${helpBGImage})` }}
+          className="bg-cover bg-center w-full h-fit text-center px-3 py-10 sm:p-12 md:p-14 xl:p-20"
+        >
+          <p
+            style={{ fontFamily: '"Amatic SC", cursive' }}
+            className="text-[#ffac00] uppercase text-[20px] sm:text-[25px]"
+          >
+            Help is Our Goal
+          </p>
+          <p className="capitalize text-[25px] sm:text-[35px] font-semibold mb-10">
+            What Make Us Different
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="bg-transparent rounded-lg hover:bg-white py-10 px-5">
+              <img
+                src="../../../src/assets/about-us-icons/icon-box_01.png"
+                alt=""
+                className="mx-auto"
+              />
+              <p className="my-5 font-semibold text-[22px] ">We Educate</p>
+              <p className="text-gray-600">
+                We help local nonprofits access the funding, tools, training,
+                and support they need
+              </p>
+            </div>
+            <div className="bg-transparent rounded-lg hover:bg-white py-10 px-5">
+              <img
+                src="../../../src/assets/about-us-icons/icon-box_02.png"
+                alt=""
+                className="mx-auto"
+              />
+              <p className="my-5 font-semibold text-[22px] ">We Help</p>
+              <p className="text-gray-600">
+                We help local nonprofits access the funding, tools, training,
+                and support they need
+              </p>
+            </div>
+            <div className="bg-transparent rounded-lg hover:bg-white py-10 px-5">
+              <img
+                src="../../../src/assets/about-us-icons/icon-box_03.png"
+                alt=""
+                className="mx-auto"
+              />
+              <p className="my-5 font-semibold text-[22px] ">We Build</p>
+              <p className="text-gray-600">
+                We help local nonprofits access the funding, tools, training,
+                and support they need
+              </p>
+            </div>
+            <div className="bg-transparent rounded-lg hover:bg-white py-10 px-5">
+              <img
+                src="../../../src/assets/about-us-icons/icon-box_04.png"
+                alt=""
+                className="mx-auto"
+              />
+              <p className="my-5 font-semibold text-[22px] ">We Donate</p>
+              <p className="text-gray-600">
+                We help local nonprofits access the funding, tools, training,
+                and support they need
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          className="pb-"
+          style={{
+            backgroundImage: `url(${helpBGImage})`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "top center",
+            backgroundSize: "100% 50%", // only half height
+          }}
+        >
           <div
             ref={ref}
-            className="bg-white shadow-2xl rounded-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 py-12 px-10 w-[80%] mx-auto"
+            className="bg-white shadow-xl rounded-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 py-12 px-10 w-[80%] mx-auto"
           >
             {stats.map((stat, i) => (
               <div
@@ -123,11 +197,14 @@ const AboutUs = () => {
             ))}
           </div>
         </div>
-        <Fifth_Home
+
+      <div className="pt-20">
+          <Fifth_Home
           bgImage={fifthBGImage}
           bgColor={null}
           partnerImages={partnerImages}
         />
+      </div>
       </div>
     </>
   );
