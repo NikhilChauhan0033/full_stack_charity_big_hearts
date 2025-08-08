@@ -1,7 +1,13 @@
 import { IoIosArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom";
 
-const Header_Repeat = ({ bgImage, Title,smallTitle, currentPage, secondlocate }) => {
+const Header_Repeat = ({
+  bgImage,
+  Title,
+  smallTitle,
+  currentPage,
+  secondlocate,
+}) => {
   return (
     <div
       className="w-full h-[60vh] bg-cover bg-center text-white flex flex-col items-center justify-center text-center px-4"

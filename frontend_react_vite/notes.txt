@@ -24,6 +24,12 @@ steps for isntall react vite
 
 11) "npm install react-icons" for icons
 
+12) "react-countup" for the number animation
+
+13) "react-intersection-observer" to trigger the animation when the section becomes visible
+
+12+13)pne short command of 12 and 13 one "npm install react-countup react-intersection-observer"
+
 🧹 1. Uninstall Tailwind and Clean Up
 Run this to uninstall the broken version:
 
