@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../base_api/api";
 import FullPageLoader from "../loader/FullPageLoader"; // 👈 import loader
+import ToastMessage from "../toastmessage/ToastMessage";
 
 const DonationDetail = ({ updateCartCount }) => {
   const { id } = useParams();
@@ -11,6 +12,20 @@ const DonationDetail = ({ updateCartCount }) => {
   const [campaign, setCampaign] = useState(null);
   const [inCart, setInCart] = useState(false);
   const [loading, setLoading] = useState(true); // 👈 loader state
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState(""); // "success" or "error"
+
+useEffect(() => {
+  if (toastMessage) {
+    const timer = setTimeout(() => {
+      setToastMessage("");
+      setToastType("");
+    }, 3000); // 3 seconds
+
+    return () => clearTimeout(timer);
+  }
+}, [toastMessage]);
 
   useEffect(() => {
     const fetchCampaignDetails = async () => {
@@ -39,7 +54,8 @@ const DonationDetail = ({ updateCartCount }) => {
 
   const handleCart = async () => {
     if (!token) {
-      alert("Please login to use cart.");
+      setToastMessage("Please login to use cart.");
+    setToastType("error");
       navigate("/login");
       return;
     }
@@ -51,18 +67,21 @@ const DonationDetail = ({ updateCartCount }) => {
         await API.post("cart/", { campaign: Number(id) });
         setInCart(true);
         updateCartCount();
-        alert("Added to cart!");
+         setToastMessage("Added to cart!");
+      setToastType("success");
       } catch (err) {
         const errorData = err.response?.data;
         if (
           Array.isArray(errorData) &&
           errorData[0] === "Campaign already in cart."
         ) {
-          alert("Already in cart. Redirecting...");
+         setToastMessage("Already in cart. Redirecting...");
+        setToastType("error");
           navigate("/cart");
         } else {
           console.error("Error adding to cart:", errorData || err.message);
-          alert("Something went wrong");
+         setToastMessage("Something went wrong");
+        setToastType("error");
         }
       }
     }
@@ -89,6 +108,9 @@ const DonationDetail = ({ updateCartCount }) => {
 
       <h3>Donate Now</h3>
       {/* You can add a donation form or Razorpay integration here later */}
+
+      <ToastMessage message={toastMessage} type={toastType} />
+
     </div>
   );
 };

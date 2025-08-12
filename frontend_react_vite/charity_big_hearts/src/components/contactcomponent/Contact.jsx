@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import API from "../base_api/api";
 import Header_Repeat from "../header_repeat_component/Header_Repeat";
 import bgImage from "../../../src/assets/pagetitle_contacts.jpg";
@@ -6,49 +6,49 @@ import contactBG from "../../../src/assets/contacts_01.png";
 import { IoLocationSharp } from "react-icons/io5";
 import { SiMinutemailer } from "react-icons/si";
 import { IoCallSharp } from "react-icons/io5";
+import ToastMessage from "../toastmessage/ToastMessage";
 
 const Contact = () => {
- const [form, setForm] = useState({
-  name: "",
-  email: "",
-  message: "",
-});
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
 
-const [success, setSuccess] = useState("");
-const [error, setError] = useState("");
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState(""); // "success" or "error"
 
-// Auto-hide success/error after 3 seconds
-useEffect(() => {
-  if (success || error) {
-    const timer = setTimeout(() => {
-      setSuccess("");
-      setError("");
-    }, 3000);
-    return () => clearTimeout(timer);
-  }
-}, [success, error]);
+  useEffect(() => {
+    if (toastMessage) {
+      const timer = setTimeout(() => {
+        setToastMessage("");
+        setToastType("");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toastMessage]);
 
-const handleChange = (e) => {
-  setForm({ ...form, [e.target.name]: e.target.value });
-  setError("");
-  setSuccess("");
-};
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    await API.post("contact/", form);
-    setSuccess("Your message has been sent!");
-    setForm({ name: "", email: "", message: "" });
-  } catch (err) {
-    const msg =
-      err.response?.data?.detail ||
-      err.response?.data?.error ||
-      "Something went wrong. Please try again.";
-    setError(msg);
-  }
-};
+    try {
+      await API.post("contact/", form);
+      setToastMessage("Your message has been sent!");
+      setToastType("success");
+      setForm({ name: "", email: "", message: "" });
+    } catch (err) {
+      const msg =
+        err.response?.data?.detail ||
+        err.response?.data?.error ||
+        "Something went wrong. Please try again.";
+      setToastMessage(msg);
+      setToastType("error");
+    }
+  };
 
   return (
     <>
@@ -168,18 +168,9 @@ const handleSubmit = async (e) => {
           >
             Send a Message
           </button>
-          {success && (
-            <div className="fixed top-5 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-500 translate-x-0 opacity-100">
-              {success}
-            </div>
-          )}
-
-          {error && (
-            <div className="fixed top-5 right-5 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-500 translate-x-0 opacity-100">
-              {error}
-            </div>
-          )}
         </form>
+
+        <ToastMessage message={toastMessage} type={toastType} />
       </div>
 
       <iframe
