@@ -5,7 +5,6 @@ import FullPageLoader from "../loader/FullPageLoader";
 import Header_Repeat from "../header_repeat_component/Header_Repeat";
 import bgImage from "../../../src/assets/pagetitle_typography.jpg";
 
-
 const Donations = () => {
   const [categories, setCategories] = useState([]);
   const [campaigns, setCampaigns] = useState([]);
@@ -14,7 +13,6 @@ const Donations = () => {
   const [loading, setLoading] = useState(true);
   const [token] = useState(localStorage.getItem("access"));
 
-  // Added for dynamic pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -24,7 +22,6 @@ const Donations = () => {
   const fetchCampaigns = async (url = "donations/") => {
     setLoading(true);
     try {
-      // Simulate delay for loader
       await new Promise((res) => setTimeout(res, 2000));
 
       const res = await API.get(url);
@@ -34,7 +31,6 @@ const Donations = () => {
         setPrevPage(res.data.previous);
         setTotalCount(res.data.count || 0);
 
-        // Current page from URL
         if (url.includes("page=")) {
           const pageMatch = url.match(/page=(\d+)/);
           setCurrentPage(pageMatch ? parseInt(pageMatch[1]) : 1);
@@ -42,7 +38,6 @@ const Donations = () => {
           setCurrentPage(1);
         }
 
-        // Calculate total pages (adjust itemsPerPage if different)
         const itemsPerPage = 10;
         setTotalPages(Math.ceil((res.data.count || 0) / itemsPerPage));
       } else {
@@ -61,60 +56,37 @@ const Donations = () => {
     const fetchAll = async () => {
       setLoading(true);
       try {
-        // Fetch categories
         const catRes = await API.get("categories/");
         if (Array.isArray(catRes.data.results)) {
           setCategories(catRes.data.results);
         } else {
-          console.error("Categories response is not an array:", catRes.data);
           setCategories([]);
         }
-
-        // Fetch campaigns
         await fetchCampaigns();
       } catch (err) {
-        console.error("Category error:", err);
         setCategories([]);
       } finally {
         setLoading(false);
       }
     };
-
     fetchAll();
   }, []);
-
-  const handleCategoryClick = (categoryId) => {
-    navigate(`/donations/category/${categoryId}`);
-  };
 
   const handleDetailClick = (id) => {
     navigate(`/donations/detail/${id}`);
   };
 
-  const handleDonate = () => {
-    if (!token) {
-      alert("Please login to donate.");
-      navigate("/login");
-    } else {
-      navigate("/donations");
-    }
-  };
-
-  // Dynamic pagination handler
   const handlePageClick = (pageNumber) => {
     const url = `donations/?page=${pageNumber}`;
     fetchCampaigns(url);
   };
 
-  // Pages display logic
   const getVisiblePages = () => {
     const pages = [];
     const maxVisiblePages = 5;
 
     if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
       let start = Math.max(1, currentPage - 2);
       let end = Math.min(totalPages, currentPage + 2);
@@ -127,23 +99,17 @@ const Donations = () => {
         end = totalPages;
       }
 
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
+      for (let i = start; i <= end; i++) pages.push(i);
     }
-
     return pages;
   };
 
-  // Map category IDs to names
   const categoriesMap = {};
   categories.forEach((cat) => {
     categoriesMap[cat.id] = cat.name;
   });
 
-  if (loading) {
-    return <FullPageLoader />;
-  }
+  if (loading) return <FullPageLoader />;
 
   return (
     <>
@@ -154,7 +120,7 @@ const Donations = () => {
         smallTitle="Donations"
       />
 
-      <div className="px-3 py-10 sm:p-16  md:p-20 xl:p-28">
+      <div className="px-3 py-10 sm:p-16 md:p-20 xl:p-28">
         <div className="text-center">
           <p
             style={{ fontFamily: '"Amatic SC", cursive' }}
@@ -167,7 +133,6 @@ const Donations = () => {
           </p>
         </div>
 
-        {/* Grid Cards Section */}
         <div className="mb-12">
           {campaigns.length === 0 ? (
             <p className="text-center text-gray-600">No campaigns available.</p>
@@ -179,7 +144,6 @@ const Donations = () => {
                     parseFloat(campaign.goal_amount)) *
                     100
                 );
-
                 return (
                   <div
                     key={campaign.id}
@@ -205,38 +169,25 @@ const Donations = () => {
                           : campaign.title}
                       </h3>
 
-                      {/* Progress Bar */}
                       <div className="mb-4 mt-7">
                         <div className="relative h-2 bg-[#FFE9C3] rounded-full mt-1">
                           <div
                             className="absolute top-0 left-0 h-2 bg-[#f74f22] rounded-full"
-                            style={{
-                              width: `${percentage}%`,
-                              transition: "width 0.5s ease",
-                            }}
+                            style={{ width: `${percentage}%` }}
                           ></div>
-
                           <div
                             className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-[#f74f22] rounded-full z-10"
-                            style={{
-                              left: `calc(${percentage}% - 8px)`,
-                              transition: "left 0.5s ease",
-                            }}
+                            style={{ left: `calc(${percentage}% - 8px)` }}
                           ></div>
-
                           <div
                             className="absolute -top-6 text-sm font-bold text-black"
-                            style={{
-                              left: `calc(${percentage}% - 12px)`,
-                              transition: "left 0.5s ease",
-                            }}
+                            style={{ left: `calc(${percentage}% - 12px)` }}
                           >
                             {percentage}%
                           </div>
                         </div>
                       </div>
 
-                      {/* Stats */}
                       <div className="flex justify-between text-sm font-medium mt-3">
                         <div>
                           <p className="text-gray-600">Goal:</p>
@@ -267,7 +218,6 @@ const Donations = () => {
             </div>
           )}
 
-          {/* Dynamic Pagination */}
           {totalPages > 1 && (
             <div className="flex items-center gap-2 mt-8">
               {prevPage && (
@@ -309,9 +259,7 @@ const Donations = () => {
                         >
                           1
                         </button>
-                        <span className="text-gray-400 font-bold px-2">
-                          ...
-                        </span>
+                        <span className="text-gray-400 font-bold px-2">...</span>
                       </>
                     )}
 
@@ -328,9 +276,7 @@ const Donations = () => {
 
                     {showDotsAfter && pageNum < totalPages && (
                       <>
-                        <span className="text-gray-400 font-bold px-2">
-                          ...
-                        </span>
+                        <span className="text-gray-400 font-bold px-2">...</span>
                         <button
                           onClick={() => handlePageClick(totalPages)}
                           className="w-12 h-12 rounded-full border-2 border-gray-200 text-gray-600 font-semibold flex items-center justify-center hover:border-[#f74f22] hover:text-[#f74f22] transition"
@@ -366,26 +312,6 @@ const Donations = () => {
             </div>
           )}
         </div>
-      </div>
-
-      {/* Category Filter Section */}
-      <div className="px-16 pb-8">
-        <h3 className="text-2xl font-semibold mb-4">Filter by Category</h3>
-        {categories.length === 0 ? (
-          <p className="text-gray-600">No categories found.</p>
-        ) : (
-          <div className="flex flex-wrap gap-3">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => handleCategoryClick(cat.id)}
-                className="px-4 py-2 bg-[#ffac00] hover:bg-[#e69500] text-white rounded-full transition"
-              >
-                {cat.name}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
     </>
   );

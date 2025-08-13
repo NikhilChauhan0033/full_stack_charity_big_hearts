@@ -58,38 +58,42 @@ const Slide_Carousel_Home = () => {
             index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
         >
+          {/* Overlay Image (same for all slides) */}
+          <img
+            src="https://wgl-dsites.net/bighearts/wp-content/uploads/2020/10/home-1_slider-1_3.png"
+            alt="Overlay Shape"
+            className="absolute top-0 left-0 w-full h-full object-cover z-[1]"
+            style={{
+              pointerEvents: "none",
+              transform: "scale(2.3) rotate(200deg)",
+            }} // so it doesn't block button clicks
+          />
+
+          {/* Main Carousel Image */}
           <img
             src={item.image}
             alt={item.title}
-            className="w-full h-full object-cover filter grayscale"
+            className="w-full h-full object-cover filter grayscale z-[0]"
           />
-          <Box className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 bg-black bg-opacity-40">
-            {/* Responsive Title */}
+
+          {/* Content */}
+          <Box className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 bg-black bg-opacity-40 z-[2]">
             <Typography
               sx={{
                 color: "white",
                 fontWeight: "bold",
                 mb: { xs: 1.5, sm: 2, md: 3 },
-                typography: {
-                  xs: "h4",
-                  sm: "h3",
-                  md: "h2",
-                },
+                typography: { xs: "h4", sm: "h3", md: "h2" },
               }}
               className="drop-shadow-lg"
             >
               {item.title}
             </Typography>
 
-            {/* Responsive Description */}
             <Typography
               sx={{
                 color: "white",
-                fontSize: {
-                  xs: "20px",
-                  sm: "25px",
-                  md: "30px",
-                },
+                fontSize: { xs: "20px", sm: "25px", md: "30px" },
                 mb: { xs: 3, sm: 4, md: 5 },
                 maxWidth: "40rem",
               }}
@@ -98,21 +102,12 @@ const Slide_Carousel_Home = () => {
               {item.description}
             </Typography>
 
-            {/* Rounded Button */}
-            <Button
-              variant="contained"
-              sx={{
-                borderRadius: "9999px", // Fully rounded
-                px: 4,
-                py: 1.5,
-                fontSize: "16px",
-                backgroundColor: "#F74F22",
-                "&:hover": { backgroundColor: "#d84315" },
-              }}
+            <button
+              className="rounded-full px-8 py-3 text-[15px] sm:text-[17px] uppercase font-semibold bg-[#F74F22] hover:bg-[#d84315] text-white"
               onClick={() => handleNavigate(item.categoryId)}
             >
-              Explore
-            </Button>
+              Learn More
+            </button>
           </Box>
         </Box>
       ))}
