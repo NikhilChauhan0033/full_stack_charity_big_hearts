@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import API from "../base_api/api";
 import FullPageLoader from "../loader/FullPageLoader";
 import ToastMessage from "../toastmessage/ToastMessage";
+import Header_Repeat from "../header_repeat_component/Header_Repeat";
+import bgImage from "../../../src/assets/pagetitle_donation.jpg";
 
 const DonationDetail = ({ updateCartCount }) => {
   const { id } = useParams();
@@ -105,9 +107,16 @@ const DonationDetail = ({ updateCartCount }) => {
   if (loading) return <FullPageLoader />;
 
   return (
+    <>
+         <title>Donation Detail - BigHearts</title>
+     <Header_Repeat
+        bgImage={bgImage}
+        secondlocate="/donations"
+        Title="donation"
+        smallTitle="donation"
+        currentPage={campaign.title}
+      />
     <div style={{ padding: "20px" }}>
-      <title>Donation Detail - BigHearts</title>
-
       <h2>{campaign.title}</h2>
       <img src={campaign.image} alt={campaign.title} width="300" />
       <p>Goal: ₹{campaign.goal_amount}</p>
@@ -146,6 +155,7 @@ const DonationDetail = ({ updateCartCount }) => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

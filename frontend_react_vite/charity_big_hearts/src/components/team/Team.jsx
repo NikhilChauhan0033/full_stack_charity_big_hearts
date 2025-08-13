@@ -111,7 +111,8 @@ const Team = () => {
                             e.stopPropagation();
                             e.preventDefault();
                           }}
-                          className="text-white w-[30px] h-[30px] rounded-full  border-[1px] border-white p-1.5 text-[15px] transition-colors duration-200"
+                          className="text-white w-[30px] h-[30px] rounded-full  border-[1px] border-white 
+                          p-[7px] text-[15px] transition-colors duration-200"
                         >
                           <FaTwitter />
                         </a>
@@ -121,7 +122,7 @@ const Team = () => {
                             e.stopPropagation();
                             e.preventDefault();
                           }}
-                          className="text-white w-[30px] h-[30px] rounded-full  border-[1px] border-white p-1.5 text-[15px] transition-colors duration-200"
+                          className="text-white w-[30px] h-[30px] rounded-full  border-[1px] border-white p-[7px] text-[15px] transition-colors duration-200"
                         >
                           <FaFacebookF />
                         </a>
@@ -131,7 +132,7 @@ const Team = () => {
                             e.stopPropagation();
                             e.preventDefault();
                           }}
-                          className="text-white w-[30px] h-[30px] rounded-full  border-[1px] border-white p-1.5 text-[15px] transition-colors duration-200"
+                          className="text-white w-[30px] h-[30px] rounded-full  border-[1px] border-white p-[7px] text-[15px] transition-colors duration-200"
                         >
                           <FaLinkedinIn />
                         </a>
@@ -141,7 +142,7 @@ const Team = () => {
                             e.stopPropagation();
                             e.preventDefault();
                           }}
-                          className="text-white w-[30px] h-[30px] rounded-full  border-[1px] border-white p-1.5 text-[15px] transition-colors duration-200"
+                          className="text-white w-[30px] h-[30px] rounded-full  border-[1px] border-white p-[7px] text-[15px] transition-colors duration-200"
                         >
                           <FaInstagram />
                         </a>
