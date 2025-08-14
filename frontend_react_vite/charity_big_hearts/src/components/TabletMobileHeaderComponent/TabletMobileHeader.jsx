@@ -8,12 +8,15 @@ import Drawer from "@mui/material/Drawer";
 import API from "../base_api/api";
 import { useNavigate, NavLink, Link } from "react-router-dom";
 import { logout } from "../base_api/api";
+import ToastMessage from "../toastmessage/ToastMessage"; // ✅ Import ToastMessage
 
 const TabletMobileHeader = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [cartCount, setCartCount] = useState(0);
+  const [toastMessage, setToastMessage] = useState(""); // ✅ Toast state
+  const [toastType, setToastType] = useState(""); // ✅ Toast type
   const token = localStorage.getItem("access");
   const navigate = useNavigate();
 
@@ -22,6 +25,23 @@ const TabletMobileHeader = () => {
   const toggleSearch = () => {
     setShowSearch(!showSearch);
     setSearchTerm("");
+  };
+
+  // ✅ Auto-hide toast function
+  useEffect(() => {
+    if (toastMessage) {
+      const timer = setTimeout(() => {
+        setToastMessage("");
+        setToastType("");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toastMessage]);
+
+  // ✅ Show toast helper function
+  const showToast = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
   };
 
   const handleSearch = async () => {
@@ -72,17 +92,18 @@ const TabletMobileHeader = () => {
     }
   }, [token]);
 
+  // ✅ Updated handleLogout with toast
   const handleLogout = async () => {
     try {
       await logout();
-      alert("Logged out successfully");
+      showToast("Logged out successfully!", "success"); // ✅ Use toast instead of alert
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
       localStorage.removeItem("username");
       navigate("/");
       setDrawerOpen(false);
     } catch (error) {
-      alert("Error during logout");
+      showToast("Error during logout. Please try again.", "error"); // ✅ Use toast for error
     }
   };
 
@@ -272,6 +293,9 @@ const TabletMobileHeader = () => {
           </div>
         </div>
       </Drawer>
+
+      {/* ✅ Toast Notification */}
+      <ToastMessage message={toastMessage} type={toastType} />
     </>
   );
 };

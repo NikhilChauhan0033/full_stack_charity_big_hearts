@@ -63,10 +63,11 @@ class Contact(models.Model):
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cart_items")
     campaign = models.ForeignKey(DonationCampaign, on_delete=models.CASCADE)
+    donation_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # 💰 store selected donation
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ['user', 'campaign']  # prevent duplicates
+        unique_together = ['user', 'campaign']
 
     def __str__(self):
-        return f"{self.user.username} - {self.campaign.title}"
+        return f"{self.user.username} - {self.campaign.title} - {self.donation_amount}"

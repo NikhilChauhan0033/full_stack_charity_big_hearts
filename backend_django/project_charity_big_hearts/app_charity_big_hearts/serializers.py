@@ -102,10 +102,11 @@ class ContactSerializer(serializers.ModelSerializer):
 # For POST/CREATE: Accept campaign ID
 class CartSerializer(serializers.ModelSerializer):
     campaign = serializers.PrimaryKeyRelatedField(queryset=DonationCampaign.objects.all())
+    donation_amount = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=0.01)  # ✅ Ensure minimum donation
 
     class Meta:
         model = Cart
-        fields = ['id', 'user', 'campaign', 'added_at']
+        fields = ['id', 'user', 'campaign', 'donation_amount', 'added_at']
         read_only_fields = ['user', 'added_at']
 
 # For GET: Return full campaign details
@@ -114,4 +115,4 @@ class CartReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cart
-        fields = ['id', 'user', 'campaign', 'added_at']
+        fields = ['id', 'user', 'campaign', 'donation_amount', 'added_at']

@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import Button from "../buttoncomponent/Button";
 import { useNavigate } from "react-router-dom";
+import ToastMessage from "../toastmessage/ToastMessage"; // ✅ Import ToastMessage
 
 const Mission_Vision_Values = () => {
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
   const [token, setToken] = useState(localStorage.getItem("access"));
+   const [toastMessage, setToastMessage] = useState(""); // ✅ Toast state
+  const [toastType, setToastType] = useState(""); // ✅ Toast type
 
   const [missionStats, setMissionStats] = useState({
     percent: 0,
@@ -56,10 +59,21 @@ const Mission_Vision_Values = () => {
     }
   }, [activeTab]);
 
+
+
+  // ✅ Show toast helper function
+  const showToast = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+  };
+
   const handleDonate = () => {
     if (!token) {
-      alert("Please login to donate.");
+      showToast("Please login to donate.", "error"); // ✅ Use toast instead of alert
+        // Wait 2 seconds so user can read toast
+    setTimeout(() => {
       navigate("/login");
+    }, 1000);
     } else {
       navigate("/donations");
     }
@@ -331,6 +345,8 @@ const Mission_Vision_Values = () => {
           />
         </div>
       </div>
+      {/* ✅ Toast Notification */}
+      <ToastMessage message={toastMessage} type={toastType} />
     </>
   );
 };

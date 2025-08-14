@@ -1,14 +1,24 @@
 import Button from "../buttoncomponent/Button";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import ToastMessage from "../toastmessage/ToastMessage"; // ✅ Import ToastMessage
 
 const Home_Category_Second = () => {
   const navigate = useNavigate();
   const [token, setToken] = useState(localStorage.getItem("access"));
 
+  const [toastMessage, setToastMessage] = useState(""); // ✅ Toast state
+  const [toastType, setToastType] = useState(""); // ✅ Toast type
+
+  // ✅ Show toast helper function
+  const showToast = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+  };
+
   const handleDonate = () => {
     if (!token) {
-      alert("Please login to donate.");
+      showToast("Please login to donate.", "error"); // ✅ Use toast instead of alert
       navigate("/login");
     } else {
       navigate("/donations");
@@ -80,6 +90,8 @@ const Home_Category_Second = () => {
           </div>
         </div>
       </div>
+      {/* ✅ Toast Notification */}
+      <ToastMessage message={toastMessage} type={toastType} />
     </>
   );
 };

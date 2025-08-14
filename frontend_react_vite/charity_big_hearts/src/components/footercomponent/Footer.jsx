@@ -11,14 +11,29 @@ import { SiMinutemailer } from "react-icons/si";
 import { Link } from "react-router-dom";
 import Button from "../buttoncomponent/Button";
 import { useNavigate } from "react-router-dom";
+import ToastMessage from "../toastmessage/ToastMessage"; // ✅ Import ToastMessage
+import { useState } from "react";
 
 const Footer = () => {
   const token = localStorage.getItem("access");
   const navigate = useNavigate();
+
+  const [toastMessage, setToastMessage] = useState(""); // ✅ Toast state
+  const [toastType, setToastType] = useState(""); // ✅ Toast type
+
+  // ✅ Show toast helper function
+  const showToast = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+  };
+
   const handleDonate = () => {
     if (!token) {
-      alert("Please login to donate.");
+      showToast("Please login to donate.", "error"); // ✅ Use toast instead of alert
+        // Wait 2 seconds so user can read toast
+    setTimeout(() => {
       navigate("/login");
+    }, 1000);
     } else {
       navigate("/donations");
     }
@@ -135,6 +150,9 @@ const Footer = () => {
           </p>
         </div>
       </div>
+
+      {/* ✅ Toast Notification */}
+      <ToastMessage message={toastMessage} type={toastType} />
     </>
   );
 };

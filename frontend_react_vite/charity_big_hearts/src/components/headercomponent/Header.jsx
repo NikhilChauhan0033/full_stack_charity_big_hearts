@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { logout } from "../base_api/api";
 import API from "../base_api/api";
 import Button from "../buttoncomponent/Button";
+import ToastMessage from "../toastmessage/ToastMessage"; // ✅ Import ToastMessage
 
 const Header = ({ cartCount, updateCartCount }) => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ const Header = ({ cartCount, updateCartCount }) => {
 
   const [showSearch, setShowSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [toastMessage, setToastMessage] = useState(""); // ✅ Toast state
+  const [toastType, setToastType] = useState(""); // ✅ Toast type
 
   // ✅ Keep token reactive
   useEffect(() => {
@@ -30,6 +33,23 @@ const Header = ({ cartCount, updateCartCount }) => {
       clearInterval(interval);
     };
   }, []);
+
+  // ✅ Auto-hide toast function
+  useEffect(() => {
+    if (toastMessage) {
+      const timer = setTimeout(() => {
+        setToastMessage("");
+        setToastType("");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toastMessage]);
+
+  // ✅ Show toast helper function
+  const showToast = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+  };
 
   const toggleSearch = () => {
     setShowSearch(!showSearch);
@@ -70,22 +90,26 @@ const Header = ({ cartCount, updateCartCount }) => {
     }
   };
 
+  // ✅ Updated handleLogout with toast
   const handleLogout = async () => {
     try {
       await logout();
-      alert("Logged out successfully");
+      showToast("Logged out successfully!", "success"); // ✅ Use toast instead of alert
       localStorage.clear(); // clear all tokens
       setToken(null);
       navigate("/");
     } catch (error) {
-      alert("Error during logout");
+      showToast("Error during logout. Please try again.", "error"); // ✅ Use toast for error
     }
   };
 
   const handleDonate = () => {
     if (!token) {
-      alert("Please login to donate.");
+      showToast("Please login to donate.", "error"); // ✅ Use toast instead of alert
+        // Wait 2 seconds so user can read toast
+    setTimeout(() => {
       navigate("/login");
+    }, 1000);
     } else {
       navigate("/donations");
     }
@@ -227,6 +251,9 @@ const Header = ({ cartCount, updateCartCount }) => {
           </div>
         )}
       </div>
+
+      {/* ✅ Toast Notification */}
+      <ToastMessage message={toastMessage} type={toastType} />
     </>
   );
 };

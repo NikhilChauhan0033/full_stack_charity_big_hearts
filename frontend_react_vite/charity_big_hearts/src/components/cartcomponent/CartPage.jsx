@@ -47,7 +47,7 @@ const CartPage = ({ updateCartCount }) => {
     setTimeout(() => setToast({ message: "", type: "" }), 3000);
   };
 
- if (loading) {
+  if (loading) {
     return <FullPageLoader />;
   }
 
@@ -74,11 +74,14 @@ const CartPage = ({ updateCartCount }) => {
         ) : (
           <div className="overflow-x-auto shadow-md rounded-lg">
             {/* Table for md and larger */}
+            {/* Table for md and larger */}
             <table className="hidden md:table min-w-full bg-white">
               <thead className="bg-[#F74F22] text-white">
                 <tr>
                   <th className="px-6 py-3 text-left">Image</th>
                   <th className="px-6 py-3 text-left">Title</th>
+                  <th className="px-6 py-3 text-left">Your Donation</th>{" "}
+                  {/* ✅ Added */}
                   <th className="px-6 py-3 text-left">Goal</th>
                   <th className="px-6 py-3 text-left">Raised</th>
                   <th className="px-6 py-3 text-left">To Go</th>
@@ -97,6 +100,10 @@ const CartPage = ({ updateCartCount }) => {
                     </td>
                     <td className="px-6 py-4 xl:text-[17px] font-semibold">
                       {item.campaign.title}
+                    </td>
+                    {/* ✅ Show user's selected donation amount */}
+                    <td className="px-6 py-4 font-semibold text-[#F74F22]">
+                      ₹{Number(item.donation_amount || 0)}
                     </td>
                     <td className="px-6 py-4 font-semibold">
                       ₹{item.campaign.goal_amount}
@@ -121,6 +128,7 @@ const CartPage = ({ updateCartCount }) => {
             </table>
 
             {/* Card view for mobile */}
+            {/* Card view for mobile */}
             <div className="space-y-5 md:hidden">
               {cart.map((item) => (
                 <div
@@ -136,6 +144,10 @@ const CartPage = ({ updateCartCount }) => {
                     <div>
                       <p className="font-semibold text-lg">
                         {item.campaign.title}
+                      </p>
+                      {/* ✅ Added Your Donation */}
+                      <p className="text-sm text-[#F74F22] font-medium">
+                        Your Donation: ₹{Number(item.donation_amount || 0)}
                       </p>
                       <p className="text-sm text-gray-500">
                         Goal: ₹{item.campaign.goal_amount}
@@ -178,7 +190,7 @@ const CartPage = ({ updateCartCount }) => {
                 >
                   <span>{item.campaign.title}</span>
                   <span className="text-[#F74F22] font-medium">
-                    ₹{Number(item.campaign.goal_amount || 0)}
+                    ₹{Number(item.donation_amount || 0)}
                   </span>
                 </div>
               ))}
@@ -193,7 +205,7 @@ const CartPage = ({ updateCartCount }) => {
               <span className="text-[#F74F22]">
                 ₹
                 {cart.reduce(
-                  (sum, item) => sum + Number(item.campaign.goal_amount || 0),
+                  (sum, item) => sum + Number(item.donation_amount || 0),
                   0
                 )}
               </span>

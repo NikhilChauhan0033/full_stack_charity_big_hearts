@@ -24,6 +24,13 @@ const DonationDetail = ({ updateCartCount }) => {
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState("");
 
+  // const [selectedAmount, setSelectedAmount] = useState(""); // donation amount state
+
+  // ✅ Scroll to top when page loads
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Auto-hide toast
   useEffect(() => {
     if (toastMessage) {
@@ -69,11 +76,30 @@ const DonationDetail = ({ updateCartCount }) => {
     fetchData();
   }, [id, token]);
 
+  // ✅ UPDATED: Validation function for donation amount
+  const validateDonationAmount = (amount) => {
+    const numAmount = parseFloat(amount);
+    if (isNaN(numAmount) || numAmount <= 0) {
+      return "Please enter a valid donation amount greater than 0.";
+    }
+    if (numAmount < 10) {
+      return "Minimum donation amount is ₹10.";
+    }
+    if (numAmount > 1000000) {
+      return "Maximum donation amount is ₹10,00,000.";
+    }
+    return null;
+  };
+
+  // ✅ UPDATED: handleCart function with donation amount
   const handleCart = async () => {
     if (!token) {
-      setToastMessage("Please login to use cart.");
+      setToastMessage("Please login to add to cart.");
       setToastType("error");
-      navigate("/login");
+      // Wait 2 seconds so user can read toast
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
       return;
     }
 
@@ -82,15 +108,33 @@ const DonationDetail = ({ updateCartCount }) => {
       return;
     }
 
+    // ✅ Validate donation amount
+    const validationError = validateDonationAmount(amount);
+    if (validationError) {
+      setToastMessage(validationError);
+      setToastType("error");
+      return;
+    }
+
     try {
-      await API.post("cart/", { campaign: Number(id) });
+      // ✅ Send both campaign ID and donation amount
+      await API.post("cart/", {
+        campaign: Number(id),
+        donation_amount: parseFloat(amount), // Include the selected amount
+      });
+
       setInCart(true);
       updateCartCount?.();
-      setToastMessage("Added to cart!");
+      setToastMessage(`Added ₹${amount} donation to cart!`);
       setToastType("success");
     } catch (err) {
       const errorData = err.response?.data;
-      if (
+
+      // ✅ Handle specific error cases
+      if (errorData?.donation_amount) {
+        setToastMessage(`Invalid amount: ${errorData.donation_amount[0]}`);
+        setToastType("error");
+      } else if (
         Array.isArray(errorData) &&
         errorData[0] === "Campaign already in cart."
       ) {
@@ -127,12 +171,46 @@ const DonationDetail = ({ updateCartCount }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef(null);
 
+  // ✅ UPDATED: Handle amount change to update active index
+  const handleAmountChange = (e) => {
+    const newAmount = e.target.value;
+    setAmount(newAmount);
+
+    // Check if the entered amount matches any preset amount
+    const presetIndex = presetAmounts.findIndex(
+      (amt) => amt.toString() === newAmount
+    );
+    if (presetIndex !== -1) {
+      setActiveIndex(presetIndex);
+    } else {
+      setActiveIndex(presetAmounts.length); // Set to custom amount index
+    }
+  };
+
   // Auto-focus input when CUSTOM AMOUNT is active
   useEffect(() => {
     if (activeIndex === presetAmounts.length) {
       inputRef.current?.focus();
     }
   }, [activeIndex]);
+
+  // ✅ Show toast helper function
+  const showToast = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+  };
+
+  const handleDonate = () => {
+    if (!token) {
+      showToast("Please login to donate.", "error"); // ✅ Use toast instead of alert
+      // Wait 2 seconds so user can read toast
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+    } else {
+      navigate("/donations");
+    }
+  };
 
   if (loading) return <FullPageLoader />;
 
@@ -215,8 +293,10 @@ const DonationDetail = ({ updateCartCount }) => {
                 ref={inputRef}
                 type="number"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={handleAmountChange} // ✅ Updated to use new handler
                 className="ml-3 text-[20px] font-semibold w-full outline-none rounded-full placeholder-gray-400"
+                min="10"
+                max="1000000"
               />
             </div>
 
@@ -313,14 +393,14 @@ const DonationDetail = ({ updateCartCount }) => {
 
             <div className="sm:flex items-center justify-between mt-7">
               <Button
-                onClick={null}
+                onClick={handleDonate}
                 className="group flex items-center bg-[#F74F22] px-8 rounded-full py-4 text-[15px] font-semibold text-white hover:bg-[#FFAC00] mb-5"
                 text="DONATE NOW"
                 icon={null}
               />
               <p className="text-[20px] font-semibold">
                 Donation Total:{" "}
-                <span className="text-[#F74F22]">₹{amount}</span>
+                <span className="text-[#F74F22]">₹{amount || 0}</span>
               </p>
             </div>
           </div>
@@ -413,7 +493,7 @@ const DonationDetail = ({ updateCartCount }) => {
               make kids happy
             </p>
             <Button
-              onClick={null}
+              onClick={handleDonate}
               className="group flex items-center border-2 border-[#FFAC00] px-8 rounded-full py-4 text-[15px] font-semibold text-white hover:bg-[#FFAC00] mx-auto"
               text="DONATE NOW"
               icon={null}
@@ -421,6 +501,8 @@ const DonationDetail = ({ updateCartCount }) => {
           </div>
         </div>
       </div>
+      {/* ✅ Toast Notification */}
+      <ToastMessage message={toastMessage} type={toastType} />
     </>
   );
 };

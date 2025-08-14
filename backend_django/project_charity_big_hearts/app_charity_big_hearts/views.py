@@ -132,12 +132,19 @@ class CartListCreateAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         campaign = serializer.validated_data.get('campaign')
+        donation_amount = serializer.validated_data.get('donation_amount')
 
-        if Cart.objects.filter(user=user, campaign=campaign).exists():
-            raise ValidationError("Campaign already in cart.")
-
+        # ✅ Check if item already exists
+        existing_cart_item = Cart.objects.filter(user=user, campaign=campaign).first()
+        
+        if existing_cart_item:
+            # Update the donation amount instead of raising an error
+            existing_cart_item.donation_amount = donation_amount
+            existing_cart_item.save()
+            return existing_cart_item
+        
+        # Create new cart item
         serializer.save(user=user)
-
 
 class CartDeleteAPIView(generics.DestroyAPIView):
     queryset = Cart.objects.all()
