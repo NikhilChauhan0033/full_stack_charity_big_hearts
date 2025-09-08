@@ -18,6 +18,7 @@ from .serializers import (
     ContactSerializer,
     CartSerializer,
     CartReadSerializer,
+    DonationCreateSerializer,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import filters,generics, permissions
@@ -150,3 +151,30 @@ class CartDeleteAPIView(generics.DestroyAPIView):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class DonationCreateAPIView(CreateAPIView):
+    queryset = Donation.objects.all()
+    serializer_class = DonationCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            
+            # Save the donation
+            donation = serializer.save()
+            
+            return Response({
+                'message': 'Donation submitted successfully!',
+                'donation_id': donation.id,
+                'amount': str(donation.donation_amount),
+                'campaign': donation.campaign.title
+            }, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            return Response({
+                'error': 'Failed to process donation. Please try again.',
+                'details': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)

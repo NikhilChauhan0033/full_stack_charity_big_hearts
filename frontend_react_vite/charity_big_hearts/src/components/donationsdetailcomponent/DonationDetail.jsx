@@ -11,6 +11,13 @@ import { FaRupeeSign } from "react-icons/fa";
 import Button from "../buttoncomponent/Button";
 import { FaArrowRight } from "react-icons/fa";
 import bgHeart from "../../../src/assets/about-us_02.jpg";
+import {
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+} from "@mui/material";
 
 const DonationDetail = ({ updateCartCount }) => {
   const { id } = useParams();
@@ -23,6 +30,7 @@ const DonationDetail = ({ updateCartCount }) => {
   const [categories, setCategories] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState("");
+  const [selectedPayment, setSelectedPayment] = useState("upi"); // Default to UPI
 
   // const [selectedAmount, setSelectedAmount] = useState(""); // donation amount state
 
@@ -200,15 +208,67 @@ const DonationDetail = ({ updateCartCount }) => {
     setToastType(type);
   };
 
-  const handleDonate = () => {
+  // const handleDonate = () => {
+  //   if (!token) {
+  //     showToast("Please login to donate.", "error"); // ✅ Use toast instead of alert
+  //     // Wait 2 seconds so user can read toast
+  //     setTimeout(() => {
+  //       navigate("/login");
+  //     }, 1000);
+  //   } else {
+  //     navigate("/donations");
+  //   }
+  // };
+
+  // Add state for personal info
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+  });
+
+  // Handle form input change
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Submit donation
+  const handleDonate = async (e) => {
+    e.preventDefault();
+
     if (!token) {
-      showToast("Please login to donate.", "error"); // ✅ Use toast instead of alert
-      // Wait 2 seconds so user can read toast
-      setTimeout(() => {
-        navigate("/login");
-      }, 1000);
-    } else {
-      navigate("/donations");
+      showToast("Please login to donate.", "error");
+      setTimeout(() => navigate("/login"), 1000);
+      return;
+    }
+
+    const validationError = validateDonationAmount(amount);
+    if (validationError) {
+      showToast(validationError, "error");
+      return;
+    }
+
+    try {
+      await API.post("donate/submit/", {
+        campaign: Number(id),
+        name: formData.firstname,
+        surname: formData.lastname,
+        email: formData.email,
+        donation_amount: parseFloat(amount),
+        payment_mode: selectedPayment,
+      });
+
+      // ✅ Redirect to success page
+      navigate("/donation-success", {
+        state: { amount, campaign: campaign?.title },
+      });
+    } catch (err) {
+      console.error("Error submitting donation:", err.response?.data || err);
+      // ❌ Redirect to error page
+      navigate("/donation-error", {
+        state: { error: err.response?.data || "Something went wrong" },
+      });
     }
   };
 
@@ -339,7 +399,7 @@ const DonationDetail = ({ updateCartCount }) => {
 
             <hr className="my-5 border-[1px] border-gray-300" />
 
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleDonate}>
               <p className="font-semibold text-lg mb-4">Personal Info</p>
 
               {/* First + Last Name Row */}
@@ -350,11 +410,13 @@ const DonationDetail = ({ updateCartCount }) => {
                     First Name <span className="text-[#f74f22]">*</span>
                   </label>
                   <input
+                    required
                     type="text"
                     name="firstname"
                     id="firstname"
+                    value={formData.firstname}
+                    onChange={handleInputChange}
                     placeholder="First Name"
-                    required
                     className="w-full py-3 px-5 border border-gray-400 rounded-full outline-none"
                   />
                 </div>
@@ -365,11 +427,13 @@ const DonationDetail = ({ updateCartCount }) => {
                     Last Name <span className="text-[#f74f22]">*</span>
                   </label>
                   <input
+                    required
                     type="text"
                     name="lastname"
                     id="lastname"
+                    value={formData.lastname}
+                    onChange={handleInputChange}
                     placeholder="Last Name"
-                    required
                     className="w-full py-3 px-5 border border-gray-400 rounded-full outline-none"
                   />
                 </div>
@@ -381,28 +445,115 @@ const DonationDetail = ({ updateCartCount }) => {
                   Email Address <span className="text-[#f74f22]">*</span>
                 </label>
                 <input
+                  required
                   type="email"
                   name="email"
                   id="email"
                   placeholder="Email Address"
-                  required
+                  value={formData.email}
+                  onChange={handleInputChange}
                   className="w-full py-3 px-5 border border-gray-400 rounded-full outline-none"
                 />
               </div>
-            </form>
 
-            <div className="sm:flex items-center justify-between mt-7">
-              <Button
-                onClick={handleDonate}
-                className="group flex items-center bg-[#F74F22] px-8 rounded-full py-4 text-[15px] font-semibold text-white hover:bg-[#FFAC00] mb-5"
-                text="DONATE NOW"
-                icon={null}
-              />
-              <p className="text-[20px] font-semibold">
-                Donation Total:{" "}
-                <span className="text-[#F74F22]">₹{amount || 0}</span>
-              </p>
-            </div>
+              {/* Payment Options Section - Added Here */}
+              <div className="w-full mt-6">
+                <FormControl component="fieldset" className="w-full">
+                  <FormLabel
+                    component="legend"
+                    className="!text-black !font-semibold !text-lg !mb-4"
+                    sx={{
+                      "&.Mui-focused": { color: "#F74F22" },
+                      fontSize: "18px",
+                      fontWeight: "600",
+                      marginBottom: "16px",
+                    }}
+                  >
+                    Payment Method <span className="text-[#f74f22]">*</span>
+                  </FormLabel>
+
+                  <RadioGroup
+                    value={selectedPayment}
+                    onChange={(e) => setSelectedPayment(e.target.value)}
+                    className="space-y-3"
+                  >
+                    {/* UPI Payment Option */}
+                    <div className="border border-gray-300 rounded-lg p-4 hover:border-[#F74F22] transition-colors">
+                      <FormControlLabel
+                        value="upi"
+                        control={
+                          <Radio
+                            sx={{
+                              color: "#gray",
+                              "&.Mui-checked": {
+                                color: "#F74F22",
+                              },
+                            }}
+                          />
+                        }
+                        label={
+                          <div className="flex items-center space-x-3">
+                            <div className="text-2xl">📱</div>
+                            <div>
+                              <p className="font-semibold text-gray-800">
+                                UPI Payment
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                Pay using Google Pay, PhonePe, Paytm, etc.
+                              </p>
+                            </div>
+                          </div>
+                        }
+                        className="m-0 w-full"
+                      />
+                    </div>
+
+                    {/* Debit/Credit Card Option */}
+                    <div className="border border-gray-300 rounded-lg p-4 hover:border-[#F74F22] transition-colors">
+                      <FormControlLabel
+                        value="card"
+                        control={
+                          <Radio
+                            sx={{
+                              color: "#gray",
+                              "&.Mui-checked": {
+                                color: "#F74F22",
+                              },
+                            }}
+                          />
+                        }
+                        label={
+                          <div className="flex items-center space-x-3">
+                            <div className="text-2xl">💳</div>
+                            <div>
+                              <p className="font-semibold text-gray-800">
+                                Debit/Credit Card
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                Pay using Visa, Mastercard, RuPay, etc.
+                              </p>
+                            </div>
+                          </div>
+                        }
+                        className="m-0 w-full"
+                      />
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+              </div>
+              <div className="sm:flex items-center justify-between mt-7">
+                <Button
+                  type="submit"
+                  className="group flex items-center bg-[#F74F22] px-8 rounded-full py-4 text-[15px] font-semibold text-white hover:bg-[#FFAC00] mb-5"
+                  text="DONATE NOW"
+                  icon={null}
+                />
+                <p className="text-[20px] font-semibold">
+                  Donation Total:{" "}
+                  <span className="text-[#F74F22]">₹{amount || 0}</span>
+                </p>
+              </div>
+            </form>
           </div>
 
           <ToastMessage message={toastMessage} type={toastType} />

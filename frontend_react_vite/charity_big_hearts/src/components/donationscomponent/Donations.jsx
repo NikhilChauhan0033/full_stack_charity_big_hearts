@@ -19,6 +19,11 @@ const Donations = () => {
 
   const navigate = useNavigate();
 
+    // ✅ Scroll to top when page loads
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const fetchCampaigns = async (url = "donations/") => {
     setLoading(true);
     try {

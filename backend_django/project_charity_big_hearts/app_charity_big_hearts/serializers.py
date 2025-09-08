@@ -116,3 +116,34 @@ class CartReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ['id', 'user', 'campaign', 'donation_amount', 'added_at']
+
+# Add this to your serializers.py
+class DonationCreateSerializer(serializers.ModelSerializer):
+    campaign = serializers.PrimaryKeyRelatedField(queryset=DonationCampaign.objects.all())
+    name = serializers.CharField(max_length=100)
+    surname = serializers.CharField(max_length=100)
+    email = serializers.EmailField()
+    donation_amount = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=10.00)
+    payment_mode = serializers.ChoiceField(choices=[('upi', 'UPI'), ('card', 'Card')])
+
+    class Meta:
+        model = Donation
+        fields = ['campaign', 'name', 'surname', 'email', 'donation_amount', 'payment_mode']
+
+    def validate_donation_amount(self, value):
+        if value < 10:
+            raise serializers.ValidationError("Minimum donation amount is ₹10.")
+        if value > 1000000:
+            raise serializers.ValidationError("Maximum donation amount is ₹10,00,000.")
+        return value
+
+    def create(self, validated_data):
+        # Create the donation
+        donation = Donation.objects.create(**validated_data)
+        
+        # Update campaign raised amount
+        campaign = validated_data['campaign']
+        campaign.raised_amount += validated_data['donation_amount']
+        campaign.save()
+        
+        return donation

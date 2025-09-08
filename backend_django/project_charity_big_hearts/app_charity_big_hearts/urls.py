@@ -14,6 +14,7 @@ from .views import (
     ContactDeleteAPIView,
     CartListCreateAPIView,
     CartDeleteAPIView,
+    DonationCreateAPIView,
 )
 
 from rest_framework_simplejwt.views import TokenRefreshView, TokenBlacklistView
@@ -42,5 +43,7 @@ urlpatterns = [
 
     path('cart/', CartListCreateAPIView.as_view(), name='cart-list-create'),
     path('cart/<int:pk>/', CartDeleteAPIView.as_view(), name='cart-delete'),
+
+    path('donate/submit/', DonationCreateAPIView.as_view(), name='donation-create'),
 ]
 

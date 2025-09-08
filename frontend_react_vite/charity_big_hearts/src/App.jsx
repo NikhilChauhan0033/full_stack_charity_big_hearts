@@ -26,6 +26,8 @@ import AboutUs from "./components/about_us_component/About_Us";
 import MyProfile from "./components/profilecomponent/MyProfile";
 import TabletMobileHeader from "./components/TabletMobileHeaderComponent/TabletMobileHeader";
 import Footer from "./components/footercomponent/Footer";
+import DonationSuccess from "./components/donationsdetailcomponent/DonationSuccess";
+import DonationError from "./components/donationsdetailcomponent/DonationError";
 
 import { refreshAccessToken, isTokenExpired } from "./components/base_api/api";
 import API from "./components/base_api/api";
@@ -85,6 +87,8 @@ function LayoutWrapper({ cartCount, updateCartCount }) {
             </RedirectIfAuth>
           }
         />
+        <Route path="/donation-success" element={<DonationSuccess />} />
+        <Route path="/donation-error" element={<DonationError />} />
       </Routes>
 
       {!hideLayout && <Footer />}

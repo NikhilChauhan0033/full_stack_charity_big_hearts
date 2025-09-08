@@ -31,7 +31,6 @@ class Donation(models.Model):
     payment_mode = models.CharField(max_length=50, choices=[
         ('upi', 'UPI'),
         ('card', 'Card'),
-        ('paypal', 'PayPal')
     ])
     donated_at = models.DateTimeField(auto_now_add=True)
 
