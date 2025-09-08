@@ -117,7 +117,6 @@ class CartReadSerializer(serializers.ModelSerializer):
         model = Cart
         fields = ['id', 'user', 'campaign', 'donation_amount', 'added_at']
 
-# Add this to your serializers.py
 class DonationCreateSerializer(serializers.ModelSerializer):
     campaign = serializers.PrimaryKeyRelatedField(queryset=DonationCampaign.objects.all())
     name = serializers.CharField(max_length=100)

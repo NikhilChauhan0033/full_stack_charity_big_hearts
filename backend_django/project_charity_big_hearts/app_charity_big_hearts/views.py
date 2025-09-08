@@ -152,7 +152,6 @@ class CartDeleteAPIView(generics.DestroyAPIView):
     serializer_class = CartSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-
 class DonationCreateAPIView(CreateAPIView):
     queryset = Donation.objects.all()
     serializer_class = DonationCreateSerializer

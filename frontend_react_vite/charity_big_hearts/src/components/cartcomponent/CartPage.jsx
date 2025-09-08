@@ -8,11 +8,14 @@ import { Link } from "react-router-dom";
 import { IoCartSharp } from "react-icons/io5";
 import { ImCross } from "react-icons/im";
 import FullPageLoader from "../loader/FullPageLoader";
+import DonationForm from "../donationsdetailcomponent/DonationForm";
+import { useNavigate } from "react-router-dom";
 
 const CartPage = ({ updateCartCount }) => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ message: "", type: "" });
+  const navigate = useNavigate();
 
   const fetchCart = async () => {
     try {
@@ -46,6 +49,11 @@ const CartPage = ({ updateCartCount }) => {
     setToast({ message, type });
     setTimeout(() => setToast({ message: "", type: "" }), 3000);
   };
+
+  const totalAmount = cart.reduce(
+    (sum, item) => sum + Number(item.donation_amount || 0),
+    0
+  );
 
   if (loading) {
     return <FullPageLoader />;
@@ -186,7 +194,7 @@ const CartPage = ({ updateCartCount }) => {
               {cart.map((item, index) => (
                 <div
                   key={index}
-                  className="flex justify-between  gap-x-5 text-[15px] sm:text-[16px]"
+                  className="flex justify-between gap-x-5 text-[15px] sm:text-[16px]"
                 >
                   <span>{item.campaign.title}</span>
                   <span className="text-[#F74F22] font-medium">
@@ -202,23 +210,46 @@ const CartPage = ({ updateCartCount }) => {
             {/* Total */}
             <p className="text-[18px] font-semibold flex justify-between">
               <span>Total:</span>
-              <span className="text-[#F74F22]">
-                ₹
-                {cart.reduce(
-                  (sum, item) => sum + Number(item.donation_amount || 0),
-                  0
-                )}
-              </span>
+              <span className="text-[#F74F22]">₹{totalAmount}</span>
             </p>
 
-            {/* Checkout button */}
-            <Link to="/checkout">
-              <Button
-                onClick={null}
-                className="mt-8 bg-[#F74F22] hover:bg-[#FFAC00] px-6 py-3 rounded-2xl font-semibold text-white w-full"
-                text="PROCEED TO CHECKOUT"
-              />
-            </Link>
+            {/* ✅ Use DonationForm instead of checkout button */}
+          <DonationForm
+  amount={totalAmount}
+  onSubmit={async (data) => {
+    try {
+      // 1️⃣ Post donation for each cart item
+      for (let item of cart) {
+        await API.post("donate/submit/", {
+          campaign: item.campaign.id, // store campaign ID
+          name: data.firstname,
+          surname: data.lastname,
+          email: data.email,
+          donation_amount: Number(item.donation_amount),
+          payment_mode: data.payment_mode,
+        });
+      }
+
+      // 2️⃣ Remove all items from cart in backend
+      for (let item of cart) {
+        await API.delete(`cart/${item.id}/`);
+      }
+
+      // 3️⃣ Clear local cart state
+      setCart([]);
+
+      // 4️⃣ Update cart count in header
+      updateCartCount();
+
+      // 5️⃣ Navigate to success page
+      navigate("/donation-success", { state: { amount: totalAmount } });
+    } catch (err) {
+      console.error(err.response?.data || err);
+      navigate("/donation-error", { state: { error: err.response?.data || "Something went wrong" } });
+    }
+  }}
+/>
+
           </div>
         </div>
       )}

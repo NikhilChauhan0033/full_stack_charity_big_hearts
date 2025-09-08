@@ -1,7 +1,5 @@
-// src/components/donations/DonationForm.jsx
-import { useState, useRef, useEffect } from "react";
-import { FaRupeeSign } from "react-icons/fa";
-import Button from "../buttoncomponent/Button";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Radio,
   RadioGroup,
@@ -9,97 +7,70 @@ import {
   FormControl,
   FormLabel,
 } from "@mui/material";
+import Button from "../buttoncomponent/Button";
 
-const DonationForm = ({ campaignId, defaultAmount = 100, onSubmit }) => {
-  const presetAmounts = [100, 500, 999, 1499, 2111];
-  const [amount, setAmount] = useState(defaultAmount);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [formData, setFormData] = useState({ firstname: "", lastname: "", email: "" });
+const DonationForm = ({ amount, onSubmit, setToastMessage, setToastType }) => {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("access");
+
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+  });
+
   const [selectedPayment, setSelectedPayment] = useState("upi");
-  const inputRef = useRef(null);
 
-  // auto focus custom input
-  useEffect(() => {
-    if (activeIndex === presetAmounts.length) inputRef.current?.focus();
-  }, [activeIndex]);
-
-  // amount change
-  const handleAmountChange = (e) => {
-    const newAmount = e.target.value;
-    setAmount(newAmount);
-
-    const presetIndex = presetAmounts.findIndex((amt) => amt.toString() === newAmount);
-    setActiveIndex(presetIndex !== -1 ? presetIndex : presetAmounts.length);
-  };
-
-  // input change
+  // handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // validate donation amount
+  const validateDonationAmount = (amt) => {
+    const num = parseFloat(amt);
+    if (isNaN(num) || num <= 0) return "Please enter a valid donation amount.";
+    if (num < 10) return "Minimum donation amount is ₹10.";
+    if (num > 1000000) return "Maximum donation amount is ₹10,00,000.";
+    return null;
+  };
+
+  // submit handler
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onSubmit) {
-      onSubmit({
-        campaignId,
-        amount: parseFloat(amount),
-        ...formData,
-        payment_mode: selectedPayment,
-      });
+
+    if (!token) {
+      setToastMessage?.("Please login to donate.");
+      setToastType?.("error");
+      setTimeout(() => navigate("/login"), 1000);
+      return;
     }
+
+    const error = validateDonationAmount(amount);
+    if (error) {
+      setToastMessage?.(error);
+      setToastType?.("error");
+      return;
+    }
+
+    // Pass donor info + payment method to parent
+    onSubmit({
+      firstname: formData.firstname,
+      lastname: formData.lastname,
+      email: formData.email,
+      payment_mode: selectedPayment,
+    });
   };
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
-      {/* Amount input */}
-      <div className="flex items-center bg-white rounded-full shadow p-2 w-[200px]">
-        <FaRupeeSign className="flex-shrink-0 text-white bg-[#ffac00] w-[37px] h-[37px] rounded-full p-2" />
-        <input
-          ref={inputRef}
-          type="number"
-          value={amount}
-          onChange={handleAmountChange}
-          className="ml-3 text-[20px] font-semibold w-full outline-none rounded-full"
-          min="10"
-          max="1000000"
-        />
-      </div>
-
-      {/* Preset buttons */}
-      <div className="flex items-center my-5 flex-wrap">
-        {presetAmounts.map((amt, index) => (
-          <button
-            type="button"
-            key={amt}
-            onClick={() => {
-              setAmount(amt);
-              setActiveIndex(index);
-            }}
-            className={`px-4 py-1 mr-4 mb-2 font-semibold text-[14px] border rounded-full 
-              ${activeIndex === index ? "bg-[#f74f22] text-white border-[#f74f22]" : "hover:text-[#ffac00]"}`}
-          >
-            ₹{amt}
-          </button>
-        ))}
-        <button
-          type="button"
-          onClick={() => {
-            setAmount("");
-            setActiveIndex(presetAmounts.length);
-          }}
-          className={`px-4 py-1 mr-4 mb-2 font-semibold text-[14px] border rounded-full 
-            ${activeIndex === presetAmounts.length ? "bg-[#f74f22] text-white border-[#f74f22]" : "hover:text-[#ffac00]"}`}
-        >
-          CUSTOM AMOUNT
-        </button>
-      </div>
-
-      {/* Personal Info */}
       <p className="font-semibold text-lg mb-4">Personal Info</p>
+
+      {/* First + Last Name */}
       <div className="flex flex-col lg:flex-row gap-4">
         <div className="w-full lg:w-1/2">
-          <label htmlFor="firstname" className="block mb-1">
+          <label className="block mb-1">
             First Name <span className="text-[#f74f22]">*</span>
           </label>
           <input
@@ -109,11 +80,11 @@ const DonationForm = ({ campaignId, defaultAmount = 100, onSubmit }) => {
             value={formData.firstname}
             onChange={handleInputChange}
             placeholder="First Name"
-            className="w-full py-3 px-5 border rounded-full"
+            className="w-full py-3 px-5 border border-gray-400 rounded-full outline-none"
           />
         </div>
         <div className="w-full lg:w-1/2">
-          <label htmlFor="lastname" className="block mb-1">
+          <label className="block mb-1">
             Last Name <span className="text-[#f74f22]">*</span>
           </label>
           <input
@@ -123,13 +94,14 @@ const DonationForm = ({ campaignId, defaultAmount = 100, onSubmit }) => {
             value={formData.lastname}
             onChange={handleInputChange}
             placeholder="Last Name"
-            className="w-full py-3 px-5 border rounded-full"
+            className="w-full py-3 px-5 border border-gray-400 rounded-full outline-none"
           />
         </div>
       </div>
 
-      <div className="w-full">
-        <label htmlFor="email" className="block mb-1">
+      {/* Email */}
+      <div>
+        <label className="block mb-1">
           Email <span className="text-[#f74f22]">*</span>
         </label>
         <input
@@ -139,37 +111,71 @@ const DonationForm = ({ campaignId, defaultAmount = 100, onSubmit }) => {
           value={formData.email}
           onChange={handleInputChange}
           placeholder="Email Address"
-          className="w-full py-3 px-5 border rounded-full"
+          className="w-full py-3 px-5 border border-gray-400 rounded-full outline-none"
         />
       </div>
 
       {/* Payment Method */}
-      <FormControl component="fieldset" className="w-full mt-6">
-        <FormLabel component="legend" className="!text-black !font-semibold !text-lg !mb-4">
-          Payment Method <span className="text-[#f74f22]">*</span>
-        </FormLabel>
-        <RadioGroup
-          value={selectedPayment}
-          onChange={(e) => setSelectedPayment(e.target.value)}
-          className="space-y-3"
-        >
-          <FormControlLabel
-            value="upi"
-            control={<Radio sx={{ "&.Mui-checked": { color: "#F74F22" } }} />}
-            label="UPI Payment"
-          />
-          <FormControlLabel
-            value="card"
-            control={<Radio sx={{ "&.Mui-checked": { color: "#F74F22" } }} />}
-            label="Debit/Credit Card"
-          />
-        </RadioGroup>
-      </FormControl>
+      <div className="w-full mt-6">
+        <FormControl component="fieldset" className="w-full">
+          <FormLabel
+            component="legend"
+            className="!text-black !font-semibold !text-lg !mb-4"
+          >
+            Payment Method <span className="text-[#f74f22]">*</span>
+          </FormLabel>
 
+          <RadioGroup
+            value={selectedPayment}
+            onChange={(e) => setSelectedPayment(e.target.value)}
+            className="space-y-3"
+          >
+            <div className="border border-gray-300 rounded-lg p-4 hover:border-[#F74F22] transition-colors">
+              <FormControlLabel
+                value="upi"
+                control={<Radio sx={{ "&.Mui-checked": { color: "#F74F22" } }} />}
+                label={
+                  <div className="flex items-center space-x-3">
+                    <div className="text-2xl">📱</div>
+                    <div>
+                      <p className="font-semibold">UPI Payment</p>
+                      <p className="text-sm text-gray-600">
+                        Google Pay, PhonePe, Paytm, etc.
+                      </p>
+                    </div>
+                  </div>
+                }
+                className="m-0 w-full"
+              />
+            </div>
+
+            <div className="border border-gray-300 rounded-lg p-4 hover:border-[#F74F22] transition-colors">
+              <FormControlLabel
+                value="card"
+                control={<Radio sx={{ "&.Mui-checked": { color: "#F74F22" } }} />}
+                label={
+                  <div className="flex items-center space-x-3">
+                    <div className="text-2xl">💳</div>
+                    <div>
+                      <p className="font-semibold">Debit/Credit Card</p>
+                      <p className="text-sm text-gray-600">
+                        Visa, Mastercard, RuPay, etc.
+                      </p>
+                    </div>
+                  </div>
+                }
+                className="m-0 w-full"
+              />
+            </div>
+          </RadioGroup>
+        </FormControl>
+      </div>
+
+      {/* Buttons */}
       <div className="sm:flex items-center justify-between mt-7">
         <Button
           type="submit"
-          className="bg-[#F74F22] px-8 rounded-full py-4 text-[15px] font-semibold text-white hover:bg-[#FFAC00]"
+          className="group flex items-center bg-[#F74F22] px-8 rounded-full py-4 text-[15px] font-semibold text-white hover:bg-[#FFAC00] mb-5"
           text="DONATE NOW"
         />
         <p className="text-[20px] font-semibold">
