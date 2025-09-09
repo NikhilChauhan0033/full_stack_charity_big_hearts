@@ -88,7 +88,7 @@ const CartPage = ({ updateCartCount }) => {
                 <tr>
                   <th className="px-6 py-3 text-left">Image</th>
                   <th className="px-6 py-3 text-left">Title</th>
-                  <th className="px-6 py-3 text-left">Your Donation</th>{" "}
+                  <th className="px-6 py-3 text-left">Your Donation</th>
                   {/* ✅ Added */}
                   <th className="px-6 py-3 text-left">Goal</th>
                   <th className="px-6 py-3 text-left">Raised</th>
@@ -186,7 +186,7 @@ const CartPage = ({ updateCartCount }) => {
       {/* Cart Total Summary */}
       {cart.length > 0 && (
         <div className="px-3 py-8 md:px-5 xl:p-10">
-          <div className="bg-white border border-b-[5px] border-t-[1px] border-x-[1px] border-[#F74F22] rounded-xl p-5 sm:p-10 w-full md:w-1/2">
+          <div className="bg-white border border-b-[5px] border-t-[1px] border-x-[1px] border-[#F74F22] rounded-xl p-5 sm:p-10 w-full md:w-[80%]">
             <p className="text-[30px] font-semibold mb-5">Cart Total</p>
 
             {/* Individual item prices */}
@@ -208,48 +208,53 @@ const CartPage = ({ updateCartCount }) => {
             <hr className="my-4 border-gray-300" />
 
             {/* Total */}
-            <p className="text-[18px] font-semibold flex justify-between">
+            <p className="text-[18px] font-semibold flex justify-between mb-5">
               <span>Total:</span>
               <span className="text-[#F74F22]">₹{totalAmount}</span>
             </p>
 
             {/* ✅ Use DonationForm instead of checkout button */}
-          <DonationForm
-  amount={totalAmount}
-  onSubmit={async (data) => {
-    try {
-      // 1️⃣ Post donation for each cart item
-      for (let item of cart) {
-        await API.post("donate/submit/", {
-          campaign: item.campaign.id, // store campaign ID
-          name: data.firstname,
-          surname: data.lastname,
-          email: data.email,
-          donation_amount: Number(item.donation_amount),
-          payment_mode: data.payment_mode,
-        });
-      }
+            <DonationForm
+              amount={totalAmount}
+              onSubmit={async (data) => {
+                try {
+                  // 1️⃣ Post donation for each cart item
+                  for (let item of cart) {
+                    await API.post("donate/submit/", {
+                      campaign: item.campaign.id, // store campaign ID
+                      name: data.firstname,
+                      surname: data.lastname,
+                      email: data.email,
+                      donation_amount: Number(item.donation_amount),
+                      payment_mode: data.payment_mode,
+                    });
+                  }
 
-      // 2️⃣ Remove all items from cart in backend
-      for (let item of cart) {
-        await API.delete(`cart/${item.id}/`);
-      }
+                  // 2️⃣ Remove all items from cart in backend
+                  for (let item of cart) {
+                    await API.delete(`cart/${item.id}/`);
+                  }
 
-      // 3️⃣ Clear local cart state
-      setCart([]);
+                  // 3️⃣ Clear local cart state
+                  setCart([]);
 
-      // 4️⃣ Update cart count in header
-      updateCartCount();
+                  // 4️⃣ Update cart count in header
+                  updateCartCount();
 
-      // 5️⃣ Navigate to success page
-      navigate("/donation-success", { state: { amount: totalAmount } });
-    } catch (err) {
-      console.error(err.response?.data || err);
-      navigate("/donation-error", { state: { error: err.response?.data || "Something went wrong" } });
-    }
-  }}
-/>
-
+                  // 5️⃣ Navigate to success page
+                  navigate("/donation-success", {
+                    state: { amount: totalAmount },
+                  });
+                } catch (err) {
+                  console.error(err.response?.data || err);
+                  navigate("/donation-error", {
+                    state: {
+                      error: err.response?.data || "Something went wrong",
+                    },
+                  });
+                }
+              }}
+            />
           </div>
         </div>
       )}

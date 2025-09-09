@@ -65,7 +65,7 @@ const DonationForm = ({ amount, onSubmit, setToastMessage, setToastType }) => {
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
-      <p className="font-semibold text-lg mb-4">Personal Info</p>
+      <p className="font-semibold text-xl mb-4">Personal Info</p>
 
       {/* First + Last Name */}
       <div className="flex flex-col lg:flex-row gap-4">
