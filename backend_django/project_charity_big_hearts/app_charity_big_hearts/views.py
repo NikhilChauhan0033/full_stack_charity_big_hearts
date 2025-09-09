@@ -5,8 +5,10 @@ from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
     DestroyAPIView,
-
+RetrieveUpdateAPIView,
 )
+
+from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from .serializers import (
     RegisterSerializer,
@@ -19,6 +21,8 @@ from .serializers import (
     CartSerializer,
     CartReadSerializer,
     DonationCreateSerializer,
+    UserProfileSerializer, 
+    ChangePasswordSerializer,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import filters,generics, permissions
@@ -175,5 +179,54 @@ class DonationCreateAPIView(CreateAPIView):
         except Exception as e:
             return Response({
                 'error': 'Failed to process donation. Please try again.',
+                'details': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class UserProfileView(RetrieveUpdateAPIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        try:
+            response = super().update(request, *args, **kwargs)
+            return Response({
+                'message': 'Profile updated successfully!',
+                'user': response.data
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({
+                'error': 'Failed to update profile.',
+                'details': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        try:
+            serializer = ChangePasswordSerializer(
+                data=request.data, 
+                context={'request': request}
+            )
+            
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    'message': 'Password changed successfully!'
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    'error': 'Password change failed.',
+                    'details': serializer.errors
+                }, status=status.HTTP_400_BAD_REQUEST)
+                
+        except Exception as e:
+            return Response({
+                'error': 'Failed to change password.',
                 'details': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
