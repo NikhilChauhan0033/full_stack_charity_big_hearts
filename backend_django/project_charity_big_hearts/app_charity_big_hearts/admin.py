@@ -3,4 +3,4 @@ from .models import *
 
 # Register your models here.
 
-admin.site.register([DonationCategory,DonationCampaign,Donation,Team,Contact])
+admin.site.register([DonationCategory,DonationCampaign,Donation,Team,Contact,Cart])

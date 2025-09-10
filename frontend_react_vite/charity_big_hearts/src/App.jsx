@@ -1,6 +1,12 @@
 // App.jsx - Updated to hide layout on /login and /register
 import "./App.css";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import Register from "./components/register_login_components/Register";
@@ -35,12 +41,23 @@ import API from "./components/base_api/api";
 import ProtectedAdminRoute from "./components/protectprivatecomponent/ProtectedAdminRoute";
 import AdminPanel from "./components/admin_panel/AdminPanel";
 import RedirectIfAdmin from "./components/protectprivatecomponent/RedirectIfAdmin";
+import AllUsers from "./components/admin_panel/AllUsers";
+import Contacts from "./components/admin_panel/Contacts";
+import DonationCampaigns from "./components/admin_panel/DonationCampaigns";
+import DonationCategories from "./components/admin_panel/DonationCategories";
+import AllDonations from "./components/admin_panel/AllDonations";
+import Teams from "./components/admin_panel/Teams";
+
+import NotFoundPage from "./components/NotFoundPage404/NotFoundPage404";
 
 // Wrapper component for layout control
 function LayoutWrapper({ cartCount, updateCartCount }) {
   const location = useLocation();
   const hideLayout =
-    location.pathname === "/login" || location.pathname === "/register" ||  location.pathname.startsWith("/admin-panel");
+    location.pathname === "/login" ||
+    location.pathname === "/register" ||
+    location.pathname.startsWith("/admin-panel") ||
+    location.pathname === "/404"; // <-- correct 404 check 
 
   return (
     <>
@@ -100,7 +117,17 @@ function LayoutWrapper({ cartCount, updateCartCount }) {
               <AdminPanel />
             </ProtectedAdminRoute>
           }
-        />
+        >
+          <Route path="users" element={<AllUsers />} />
+          <Route path="campaigns" element={<DonationCampaigns />} />
+          <Route path="categories" element={<DonationCategories />} />
+          <Route path="alldonations" element={<AllDonations />} />
+          <Route path="teams" element={<Teams />} />
+          <Route path="contacts" element={<Contacts />} />
+          <Route index element={<Navigate to="users" replace />} />
+        </Route>
+       <Route path="/404" element={<NotFoundPage />} />
+<Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>
 
       {!hideLayout && <Footer />}
