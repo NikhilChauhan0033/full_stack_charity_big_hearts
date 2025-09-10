@@ -63,7 +63,10 @@ class MyTokenObtainPairSerializer(serializers.Serializer):
             "refresh": str(refresh),
             "access": str(refresh.access_token),
             "username": user.first_name or user.username,
+            "is_admin": user.is_staff or user.is_superuser,  # 👈 unified flag
         }
+
+
 
 class DonationCategorySerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../base_api/api"; // Axios instance configured with baseURL & token interceptor
-import {
-  TextField,
-  Button,
-  IconButton,
-  InputAdornment,
-} from "@mui/material";
+import { TextField, Button, IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material"; // Icons for show/hide password
 import axios from "axios";
 import ToastMessage from "../toastmessage/ToastMessage"; // ✅ Import custom ToastMessage
@@ -55,19 +50,29 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent default form refresh
     try {
-      const res = await axios.post("http://127.0.0.1:8000/api/auth/login/", form);
-      
+      const res = await axios.post(
+        "http://127.0.0.1:8000/api/auth/login/",
+        form
+      );
+
       // Save JWT tokens and username in localStorage
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
       localStorage.setItem("username", res.data.username);
+      localStorage.setItem("is_admin", res.data.is_admin); // ✅ Add this
 
       // 🛠️ Add a small delay to ensure localStorage is flushed
       await new Promise((resolve) => setTimeout(resolve, 50));
 
       // ✅ Show success message and redirect
       showToast("Login successful! Redirecting...", "success");
-      setTimeout(() => navigate("/"), 1000); // Navigate to homepage after 1 second
+      setTimeout(() => {
+        if (res.data.is_admin) {
+          navigate("/admin-panel"); // ✅ redirect admins
+        } else {
+          navigate("/"); // ✅ normal users
+        }
+      }, 1000);
     } catch (err) {
       // ✅ Show error if login fails
       const backendError =

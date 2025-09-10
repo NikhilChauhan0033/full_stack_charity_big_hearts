@@ -32,11 +32,15 @@ import DonationError from "./components/donationsdetailcomponent/DonationError";
 import { refreshAccessToken, isTokenExpired } from "./components/base_api/api";
 import API from "./components/base_api/api";
 
+import ProtectedAdminRoute from "./components/protectprivatecomponent/ProtectedAdminRoute";
+import AdminPanel from "./components/admin_panel/AdminPanel";
+import RedirectIfAdmin from "./components/protectprivatecomponent/RedirectIfAdmin";
+
 // Wrapper component for layout control
 function LayoutWrapper({ cartCount, updateCartCount }) {
   const location = useLocation();
   const hideLayout =
-    location.pathname === "/login" || location.pathname === "/register";
+    location.pathname === "/login" || location.pathname === "/register" ||  location.pathname.startsWith("/admin-panel");
 
   return (
     <>
@@ -74,21 +78,29 @@ function LayoutWrapper({ cartCount, updateCartCount }) {
         <Route
           path="/register"
           element={
-            <RedirectIfAuth>
+            <RedirectIfAdmin>
               <Register />
-            </RedirectIfAuth>
+            </RedirectIfAdmin>
           }
         />
         <Route
           path="/login"
           element={
-            <RedirectIfAuth>
+            <RedirectIfAdmin>
               <Login />
-            </RedirectIfAuth>
+            </RedirectIfAdmin>
           }
         />
         <Route path="/donation-success" element={<DonationSuccess />} />
         <Route path="/donation-error" element={<DonationError />} />
+        <Route
+          path="/admin-panel"
+          element={
+            <ProtectedAdminRoute>
+              <AdminPanel />
+            </ProtectedAdminRoute>
+          }
+        />
       </Routes>
 
       {!hideLayout && <Footer />}
