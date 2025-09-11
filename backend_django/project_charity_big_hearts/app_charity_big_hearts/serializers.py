@@ -191,3 +191,18 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.set_password(self.validated_data['new_password'])
         user.save()
         return user
+
+
+class AdminUserSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'is_staff', 'is_superuser', 'date_joined', 'role']
+
+    def get_role(self, obj):
+        if obj.is_superuser:
+            return "Super Admin"
+        elif obj.is_staff:
+            return "Admin"
+        return "User"

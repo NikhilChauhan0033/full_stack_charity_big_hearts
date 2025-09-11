@@ -17,6 +17,8 @@ from .views import (
     DonationCreateAPIView,
     UserProfileView,
     ChangePasswordView,
+    AdminUserListView,
+    AdminUserDeleteView,
 )
 
 from rest_framework_simplejwt.views import TokenRefreshView, TokenBlacklistView
@@ -50,5 +52,8 @@ urlpatterns = [
 
     path('profile/', UserProfileView.as_view(), name='user-profile'),
     path('profile/change-password/', ChangePasswordView.as_view(), name='change-password'),
+
+    path('admin/users/', AdminUserListView.as_view(), name='admin-users'),
+    path('admin/users/<int:pk>/delete/', AdminUserDeleteView.as_view(), name='admin-user-delete'),
 ]
 

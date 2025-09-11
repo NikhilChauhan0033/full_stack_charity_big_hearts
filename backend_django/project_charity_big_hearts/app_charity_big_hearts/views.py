@@ -23,6 +23,7 @@ from .serializers import (
     DonationCreateSerializer,
     UserProfileSerializer, 
     ChangePasswordSerializer,
+    AdminUserSerializer,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import filters,generics, permissions
@@ -230,3 +231,15 @@ class ChangePasswordView(APIView):
                 'error': 'Failed to change password.',
                 'details': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
+
+class AdminUserListView(ListAPIView):
+    queryset = User.objects.all().order_by("-date_joined")
+    serializer_class = AdminUserSerializer
+    permission_classes = [IsAdminOrReadOnly]  # only admins can access
+    pagination_class = None
+
+class AdminUserDeleteView(DestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = AdminUserSerializer
+    permission_classes = [IsAdminOrReadOnly]
+    lookup_field = "pk"
