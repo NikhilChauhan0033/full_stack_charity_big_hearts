@@ -86,7 +86,7 @@ const AllUsers = () => {
 
       {/* Header */}
       <div className="flex-shrink-0 p-4 sm:p-6">
-        <h1 className="text-white text-center text-2xl sm:text-3xl font-bold">
+        <h1 className="text-white text-2xl sm:text-3xl font-bold">
           All Users
         </h1>
       </div>

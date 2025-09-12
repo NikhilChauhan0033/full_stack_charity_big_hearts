@@ -19,6 +19,8 @@ from .views import (
     ChangePasswordView,
     AdminUserListView,
     AdminUserDeleteView,
+    DonationCategoryDetailAPIView,
+    DonationCampaignAdminListAPIView,
 )
 
 from rest_framework_simplejwt.views import TokenRefreshView, TokenBlacklistView
@@ -32,6 +34,9 @@ urlpatterns = [
 
     # 📦 API Endpoints
     path('categories/', DonationCategoryListCreateAPIView.as_view(), name='category-list'),
+    path('categories/<int:id>/', DonationCategoryDetailAPIView.as_view(), name='category-detail'),
+
+    # public campaigns with pagination
     path('donations/', DonationCampaignListCreateAPIView.as_view(), name='donation-list'),
     path('donations/<int:id>/', DonationCampaignDetailAPIView.as_view(), name='donation-detail'),
     path('donate/', DonationListCreateAPIView.as_view(), name='donate-list'),
@@ -55,5 +60,8 @@ urlpatterns = [
 
     path('admin/users/', AdminUserListView.as_view(), name='admin-users'),
     path('admin/users/<int:pk>/delete/', AdminUserDeleteView.as_view(), name='admin-user-delete'),
+
+     # admin campaigns without pagination
+    path("admin-donations/", DonationCampaignAdminListAPIView.as_view(), name="admin-campaigns"),
 ]
 

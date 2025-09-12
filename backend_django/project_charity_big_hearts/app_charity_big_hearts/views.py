@@ -55,6 +55,12 @@ class DonationCategoryListCreateAPIView(ListCreateAPIView):
     serializer_class = DonationCategorySerializer
     permission_classes = [IsAdminOrReadOnly]
 
+class DonationCategoryDetailAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = DonationCategory.objects.all()
+    serializer_class = DonationCategorySerializer
+    lookup_field = "id"
+    permission_classes = [IsAdminOrReadOnly]
+
 
 # ✅ Campaigns
 class DonationCampaignListCreateAPIView(ListCreateAPIView):
@@ -65,11 +71,16 @@ class DonationCampaignListCreateAPIView(ListCreateAPIView):
     filterset_fields = ['category', 'category__name']
     permission_classes = [IsAdminOrReadOnly]
 
+
 class DonationCampaignDetailAPIView(RetrieveUpdateDestroyAPIView):
     queryset = DonationCampaign.objects.all()
     serializer_class = DonationCampaignSerializer
     lookup_field = 'id'
     permission_classes = [IsAdminOrReadOnly]
+
+    def update(self, request, *args, **kwargs):
+        kwargs['partial'] = True  # ✅ allow PATCH-like updates with PUT
+        return super().update(request, *args, **kwargs)
 
 # ✅ Donations
 class DonationListCreateAPIView(ListCreateAPIView):
@@ -243,3 +254,9 @@ class AdminUserDeleteView(DestroyAPIView):
     serializer_class = AdminUserSerializer
     permission_classes = [IsAdminOrReadOnly]
     lookup_field = "pk"
+
+class DonationCampaignAdminListAPIView(ListAPIView):
+    queryset = DonationCampaign.objects.all()
+    serializer_class = DonationCampaignSerializer
+    permission_classes = [IsAdminOrReadOnly]
+    pagination_class = None  # ✅ disable pagination completely
