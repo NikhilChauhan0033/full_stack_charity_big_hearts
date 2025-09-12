@@ -106,6 +106,7 @@ const DonationCategories = () => {
 
   return (
     <div className="flex flex-col h-full">
+       <title>Admin Panel All Doantion Categories - BigHearts</title>
       {/* Toast */}
       <ToastMessage message={toastMessage} type={toastType} />
 
@@ -125,10 +126,10 @@ const DonationCategories = () => {
         <div className="bg-white shadow-md rounded-lg h-full flex flex-col overflow-hidden">
           {/* Table Header */}
           <div className="bg-[#F74F22] text-white">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 px-4 py-3 text-sm sm:text-base font-semibold">
-              <div className="text-left">Category Name</div>
-              <div className="hidden sm:block text-left">ID</div>
-              <div className="text-center">Actions</div>
+            <div className="grid grid-cols-2 sm:grid-cols-12 gap-4 px-4 py-3 text-sm sm:text-base font-semibold">
+               <div className="col-span-2 hidden sm:block text-left">ID</div>
+              <div className="col-span-9 text-left">Category Name</div>
+              <div className="col-span-1 text-center">Actions</div>
             </div>
           </div>
 
@@ -144,11 +145,11 @@ const DonationCategories = () => {
                 {categories.map((c) => (
                   <div
                     key={c.id}
-                    className="grid grid-cols-2 sm:grid-cols-3 gap-4 px-4 py-3 hover:bg-red-50 transition text-sm sm:text-base"
+                    className="grid grid-cols-2 sm:grid-cols-12 gap-4 px-4 py-3 hover:bg-red-50 transition text-sm sm:text-base"
                   >
-                    <div className="font-semibold">{c.name}</div>
-                    <div className="hidden sm:block">{c.id}</div>
-                    <div className="flex justify-center">
+                    <div className="col-span-2">{c.id}</div>
+                    <div className="col-span-9 font-semibold">{c.name}</div>
+                    <div className="col-span-1 flex justify-center">
                       <button
                         onClick={() => confirmDeleteCategory(c.id)}
                         className="text-[#F74F22] hover:text-red-600 hover:bg-red-50 p-2 rounded transition"

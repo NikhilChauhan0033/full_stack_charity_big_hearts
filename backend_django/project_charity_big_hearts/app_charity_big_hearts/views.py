@@ -87,6 +87,7 @@ class DonationListCreateAPIView(ListCreateAPIView):
     queryset = Donation.objects.all()
     serializer_class = DonationSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = None
 
 class DonationDetailAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Donation.objects.all()
@@ -98,6 +99,7 @@ class TeamListCreateAPIView(ListCreateAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
     permission_classes = [IsAdminOrReadOnly]
+    pagination_class = None
 
 class TeamDetailAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Team.objects.all()
@@ -105,6 +107,9 @@ class TeamDetailAPIView(RetrieveUpdateDestroyAPIView):
     lookup_field = 'id'
     permission_classes = [IsAdminOrReadOnly] 
 
+    def update(self, request, *args, **kwargs):
+        kwargs['partial'] = True  # allow PATCH-like partial updates
+        return super().update(request, *args, **kwargs)
 
 # Already available for public
 class ContactCreateAPIView(CreateAPIView):

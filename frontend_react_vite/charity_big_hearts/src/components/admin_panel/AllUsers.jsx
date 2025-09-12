@@ -81,6 +81,7 @@ const AllUsers = () => {
 
   return (
     <div className="flex flex-col h-full">
+        <title>Admin Panel All Users - BigHearts</title>
       {/* Toast */}
       <ToastMessage message={toastMessage} type={toastType} />
 
@@ -98,11 +99,11 @@ const AllUsers = () => {
           {/* Table Header - Fixed */}
           <div className="flex-shrink-0">
             <div className="bg-[#F74F22] text-white">
-              <div className="grid grid-cols-4 gap-2 sm:gap-4 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base font-semibold">
-                <div className="text-left">Name</div>
-                <div className="text-left">Email</div>
-                <div className="text-left">Role</div>
-                <div className="text-center">Actions</div>
+              <div className="grid grid-cols-12 gap-2 sm:gap-4 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base font-semibold">
+                <div className="col-span-4">Name</div>
+                <div className="col-span-4">Email</div>
+                <div className="col-span-3">Role</div>
+                <div className="col-span-1 text-center">Actions</div>
               </div>
             </div>
           </div>
@@ -119,27 +120,27 @@ const AllUsers = () => {
                 {users.map((u) => (
                   <div 
                     key={u.id} 
-                    className="grid grid-cols-4 gap-2 sm:gap-4 px-3 sm:px-4 py-3 hover:bg-red-50 transition-colors text-sm sm:text-base"
+                    className="grid grid-cols-12 gap-2 sm:gap-4 px-3 sm:px-4 py-3 hover:bg-red-50 transition-colors text-sm sm:text-base"
                   >
                     {/* Name */}
-                    <div className="font-semibold truncate" title={u.username}>
+                    <div className="col-span-4 font-semibold truncate" title={u.username}>
                       {u.username}
                     </div>
                     
                     {/* Email */}
-                    <div className="truncate" title={u.email}>
+                    <div className="col-span-4 truncate" title={u.email}>
                       {u.email}
                     </div>
                     
                     {/* Role */}
-                    <div>
-                      <span className="inline-block px-2 py-1 text-xs sm:text-sm font-semibold text-[#F74F22] bg-red-50 rounded truncate">
+                    <div className="col-span-3">
+                      <span className="  inline-block px-2 py-1 text-xs sm:text-sm font-semibold text-[#F74F22] bg-red-50 rounded truncate">
                         {u.role}
                       </span>
                     </div>
                     
                     {/* Actions */}
-                    <div className="flex justify-center">
+                    <div className="flex justify-center col-span-1">
                       <button
                         onClick={() => confirmDeleteUser(u.id)}
                         className="text-[#F74F22] hover:text-red-600 hover:bg-red-50 p-1.5 sm:p-2 rounded transition-all duration-200 flex items-center justify-center"

@@ -160,6 +160,7 @@ const DonationCampaigns = () => {
 
   return (
     <div className="flex flex-col h-full">
+       <title>Admin Panel All Donation Campaigns - BigHearts</title>
       {/* Toast */}
       <ToastMessage message={toastMessage} type={toastType} />
 
@@ -179,13 +180,13 @@ const DonationCampaigns = () => {
         <div className="bg-white shadow-md rounded-lg h-full flex flex-col overflow-hidden">
           {/* Table Header */}
           <div className="bg-[#F74F22] text-white">
-            <div className="grid grid-cols-5 sm:grid-cols-7 gap-4 px-4 py-3 text-sm sm:text-base font-semibold">
-              <div>Title</div>
-              <div>Goal</div>
-              <div className="hidden sm:block">Raised</div>
-              <div className="hidden sm:block">Category</div>
-              <div className="hidden sm:block">To Go</div>
-              <div className="col-span-2 text-center">Actions</div>
+            <div className="grid grid-cols-12 sm:grid-cols-12 gap-4 px-4 py-3 text-sm sm:text-base font-semibold">
+              <div className="col-span-4">Title</div>
+              <div className="col-span-2">Goal</div>
+              <div className="col-span-2 ">Raised</div>
+              <div className="col-span-2 ">Category</div>
+              <div className="col-span-1 ">To Go</div>
+              <div className="col-span-1 text-center">Actions</div>
             </div>
           </div>
 
@@ -200,22 +201,22 @@ const DonationCampaigns = () => {
                 {campaigns.map((c) => (
                   <div
                     key={c.id}
-                    className="grid grid-cols-5 sm:grid-cols-7 gap-4 px-4 py-3 hover:bg-red-50 transition text-sm sm:text-base"
+                    className="grid grid-cols-12 sm:grid-cols-12 gap-4 px-4 py-3 hover:bg-red-50 transition text-sm sm:text-base"
                   >
-                    <div className="font-semibold">{c.title}</div>
-                    <div>₹{c.goal_amount}</div>
-                    <div className="hidden sm:block">₹{c.raised_amount || 0}</div>
-                    <div className="hidden sm:block">
+                    <div className="col-span-4 font-semibold">{c.title}</div>
+                    <div className="col-span-2">₹{c.goal_amount}</div>
+                    <div className="col-span-2 ">₹{c.raised_amount || 0}</div>
+                    <div className="col-span-2 ">
                       {categories.find((cat) => cat.id === c.category)?.name || c.category}
                     </div>
-                    <div className="hidden sm:block">₹{c.to_go || 0}</div>
-                    <div className="col-span-2 flex justify-center gap-3">
+                    <div className="col-span-1 ">₹{c.to_go || 0}</div>
+                    <div className="col-span-1 flex justify-center gap-3">
                       <button
                         onClick={() => setEditModal(c)}
                         className="text-blue-500 hover:text-blue-700 p-2 rounded transition"
                         title="Edit Campaign"
                       >
-                        <FaEdit size={16} />
+                        <FaEdit size={18} />
                       </button>
                       <button
                         onClick={() => confirmDeleteCampaign(c.id)}
