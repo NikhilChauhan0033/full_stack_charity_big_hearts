@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../base_api/api";
-import { FaTrash, FaDonate, FaPlus } from "react-icons/fa";
+import { FaTrash, FaDonate, FaPlus, FaUser, FaEnvelope, FaBullhorn, FaRupeeSign, FaCreditCard } from "react-icons/fa";
 import ToastMessage from "../toastmessage/ToastMessage";
 
 const AllDonations = () => {
@@ -28,7 +28,7 @@ const AllDonations = () => {
     payment_mode: "upi",
   });
 
-  // ✅ Campaign list state
+  // Campaign list state
   const [campaigns, setCampaigns] = useState([]);
 
   // Auto-hide toast
@@ -60,7 +60,7 @@ const AllDonations = () => {
     }
   };
 
-  // ✅ Fetch campaigns
+  // Fetch campaigns
   const fetchCampaigns = async () => {
     try {
       const res = await API.get("admin-donations/");
@@ -120,7 +120,7 @@ const AllDonations = () => {
 
   useEffect(() => {
     fetchDonations();
-    fetchCampaigns(); // ✅ fetch campaigns also
+    fetchCampaigns();
   }, []);
 
   if (loading) {
@@ -138,15 +138,23 @@ const AllDonations = () => {
 
   return (
     <div className="flex flex-col h-full">
-       <title>Admin Panel All Donations - BigHearts</title>
+      <title>Admin Panel All Donations - BigHearts</title>
       {/* Toast */}
       <ToastMessage message={toastMessage} type={toastType} />
 
       {/* Header */}
       <div className="flex justify-between items-center p-4 sm:p-6">
-        <h1 className="text-white text-2xl sm:text-3xl font-bold">
-          All Donations
-        </h1>
+        <div>
+          <h1 className="text-white text-2xl sm:text-3xl font-bold">
+            All Donations
+          </h1>
+          <div className="mt-2">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#F74F22] text-white">
+              <FaDonate className="mr-2" />
+              {donations.length} Donations
+            </span>
+          </div>
+        </div>
         <button
           onClick={() => setAddModal(true)}
           className="flex items-center gap-2 bg-[#F74F22] text-white px-4 py-2 rounded-lg hover:bg-red-600 transition "
@@ -155,72 +163,142 @@ const AllDonations = () => {
         </button>
       </div>
 
-      {/* Table Container */}
-      <div className="flex-1 px-4 sm:px-6 pb-4 sm:pb-6 min-h-0">
-        <div className="bg-white shadow-md rounded-lg h-full flex flex-col overflow-hidden">
-          {/* Horizontal scroll wrapper for header */}
-          <div className="overflow-x-auto">
-            <div className="min-w-[800px]">
-              {/* Table Header - Fixed */}
-              <div className="bg-[#F74F22] text-white">
-                <div className="grid grid-cols-12 gap-4 px-4 py-3 text-sm sm:text-base font-semibold">
-                  <div className="col-span-2">Name</div>
-                  <div className="col-span-3">Email</div>
-                  <div className="col-span-2">Campaign</div>
-                  <div className="col-span-2">Amount</div>
-                  <div className="col-span-2">Payment</div>
-                  <div className="col-span-1 text-center">Actions</div>
+      {/* Content Area */}
+      <div className="flex-1 min-h-0">
+        {/* Mobile and tablet Card Layout */}
+        <div className="md:hidden h-full">
+          <div className="px-4 pb-4 h-full">
+            <div className="h-full overflow-y-auto">
+              {donations.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                  <FaDonate className="text-5xl mb-4 opacity-50" />
+                  <p className="text-lg">No donations found</p>
                 </div>
-              </div>
-
-              {/* Horizontal scroll wrapper for body with INNER vertical scroll */}
-              <div className="flex-1 overflow-x-auto">
-                <div className="min-w-[800px] h-full">
-                  {/* Table Body with INNER vertical scroll */}
-                  <div className="h-full overflow-y-auto">
-                    {donations.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center h-full py-16 text-gray-500">
-                        <FaDonate className="text-3xl sm:text-4xl mb-2 opacity-50" />
-                        <p className="text-sm sm:text-base">
-                          No donations found
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="divide-y divide-gray-200">
-                        {donations.map((d) => (
-                          <div
-                            key={d.id}
-                            className="grid grid-cols-12 gap-4 px-4 py-3 hover:bg-red-50 transition text-sm sm:text-base"
-                          >
-                            <div className="col-span-2 break-words">
+              ) : (
+                <div className="space-y-3">
+                  {donations.map((d) => (
+                    <div 
+                      key={d.id} 
+                      className="bg-white rounded-xl shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow duration-200"
+                    >
+                      {/* Donation Header */}
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center mb-1">
+                            <FaUser className="text-gray-400 mr-2 text-sm" />
+                            <h3 className="text-lg font-bold text-gray-800">
                               {d.name} {d.surname}
-                            </div>
-                            <div className="col-span-3 break-all leading-tight">
-                              {d.email}
-                            </div>
-                            <div className="col-span-2 break-words">
-                              {d.campaign}
-                            </div>
-                            <div className="col-span-2">
-                              ₹{d.donation_amount}
-                            </div>
-                            <div className="col-span-2 capitalize">
-                              {d.payment_mode}
-                            </div>
-                            <div className="col-span-1 flex justify-center">
-                              <button
-                                onClick={() => confirmDeleteDonation(d.id)}
-                                className="text-[#F74F22] hover:text-red-600 hover:bg-red-50 p-2 rounded transition"
-                                title="Delete Donation"
-                              >
-                                <FaTrash size={16} />
-                              </button>
-                            </div>
+                            </h3>
                           </div>
-                        ))}
+                          <div className="flex items-center">
+                            <FaRupeeSign className="text-green-500 mr-1 text-sm" />
+                            <span className="text-xl font-bold text-green-600">
+                              {d.donation_amount}
+                            </span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => confirmDeleteDonation(d.id)}
+                          className="ml-3 p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
+                          title="Delete Donation"
+                        >
+                          <FaTrash size={16} />
+                        </button>
                       </div>
-                    )}
+
+                      {/* Donation Details */}
+                      <div className="space-y-2">
+                        {/* Email */}
+                        <div className="flex items-center text-gray-600">
+                          <FaEnvelope className="text-gray-400 mr-3 text-sm flex-shrink-0" />
+                          <span className="text-sm truncate" title={d.email}>
+                            {d.email}
+                          </span>
+                        </div>
+
+                        {/* Campaign */}
+                        <div className="flex items-center text-gray-600">
+                          <FaBullhorn className="text-gray-400 mr-3 text-sm flex-shrink-0" />
+                          <span className="text-sm truncate" title={d.campaign}>
+                            {d.campaign}
+                          </span>
+                        </div>
+
+                        {/* Payment Method */}
+                        <div className="flex items-center">
+                          <FaCreditCard className="text-gray-400 mr-3 text-sm flex-shrink-0" />
+                          <span className="inline-block px-3 py-1 text-xs font-semibold text-blue-600 bg-blue-50 rounded-full capitalize">
+                            {d.payment_mode}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Table Layout */}
+        <div className="hidden md:block h-full px-6 pb-6">
+          <div className="bg-white shadow-md rounded-lg h-full flex flex-col overflow-hidden">
+            <div className="overflow-x-auto">
+              <div className="min-w-[800px]">
+                {/* Table Header */}
+                <div className="bg-[#F74F22] text-white">
+                  <div className="grid grid-cols-12 gap-4 px-4 py-3 text-sm font-semibold">
+                    <div className="col-span-2">Name</div>
+                    <div className="col-span-3">Email</div>
+                    <div className="col-span-2">Campaign</div>
+                    <div className="col-span-2">Amount</div>
+                    <div className="col-span-2">Payment</div>
+                    <div className="col-span-1 text-center">Actions</div>
                   </div>
+                </div>
+
+                {/* Table Body */}
+                <div className="flex-1 overflow-y-auto">
+                  {donations.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full py-16 text-gray-500">
+                      <FaDonate className="text-4xl mb-2 opacity-50" />
+                      <p className="text-base">No donations found</p>
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-gray-200">
+                      {donations.map((d) => (
+                        <div
+                          key={d.id}
+                          className="grid grid-cols-12 gap-4 px-4 py-3 hover:bg-red-50 transition text-sm"
+                        >
+                          <div className="col-span-2 break-words">
+                            {d.name} {d.surname}
+                          </div>
+                          <div className="col-span-3 break-all leading-tight">
+                            {d.email}
+                          </div>
+                          <div className="col-span-2 break-words">
+                            {d.campaign}
+                          </div>
+                          <div className="col-span-2">
+                            ₹{d.donation_amount}
+                          </div>
+                          <div className="col-span-2 capitalize">
+                            {d.payment_mode}
+                          </div>
+                          <div className="col-span-1 flex justify-center">
+                            <button
+                              onClick={() => confirmDeleteDonation(d.id)}
+                              className="text-[#F74F22] hover:text-red-600 hover:bg-red-50 p-2 rounded transition"
+                              title="Delete Donation"
+                            >
+                              <FaTrash size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -268,7 +346,6 @@ const AllDonations = () => {
               Add New Donation
             </h2>
 
-            {/* ✅ Campaign Dropdown */}
             <select
               value={newDonation.campaign}
               onChange={(e) =>

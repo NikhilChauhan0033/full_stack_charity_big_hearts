@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../base_api/api";
-import { FaTrash, FaUsers } from "react-icons/fa";
+import { FaTrash, FaUsers, FaEnvelope, FaUserTag } from "react-icons/fa";
 import ToastMessage from "../toastmessage/ToastMessage";
 
 const AllUsers = () => {
@@ -81,7 +81,7 @@ const AllUsers = () => {
 
   return (
     <div className="flex flex-col h-full">
-        <title>Admin Panel All Users - BigHearts</title>
+      <title>Admin Panel All Users - BigHearts</title>
       {/* Toast */}
       <ToastMessage message={toastMessage} type={toastType} />
 
@@ -90,69 +90,132 @@ const AllUsers = () => {
         <h1 className="text-white text-2xl sm:text-3xl font-bold">
           All Users
         </h1>
+        {/* User count badge */}
+        <div className="mt-2">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#F74F22] text-white">
+            <FaUsers className="mr-2" />
+            {users.length} Users
+          </span>
+        </div>
       </div>
 
-      {/* Content Area - Scrollable table container */}
-      <div className="flex-1 px-4 sm:px-6 pb-4 sm:pb-6 min-h-0">
-        <div className="bg-white shadow-md rounded-lg h-full flex flex-col overflow-hidden">
-          
-          {/* Table Header - Fixed */}
-          <div className="flex-shrink-0">
-            <div className="bg-[#F74F22] text-white">
-              <div className="grid grid-cols-12 gap-2 sm:gap-4 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base font-semibold">
-                <div className="col-span-4">Name</div>
-                <div className="col-span-4">Email</div>
-                <div className="col-span-3">Role</div>
-                <div className="col-span-1 text-center">Actions</div>
-              </div>
+      {/* Content Area */}
+      <div className="flex-1 min-h-0">
+        {/* Mobile and tablet Card Layout */}
+        <div className="md:hidden h-full">
+          <div className="px-4 pb-4 h-full">
+            <div className="h-full overflow-y-auto">
+              {users.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                  <FaUsers className="text-5xl mb-4 opacity-50" />
+                  <p className="text-lg">No users found</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {users.map((u) => (
+                    <div 
+                      key={u.id} 
+                      className="bg-white rounded-xl shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow duration-200"
+                    >
+                      {/* User Header */}
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center mb-1">
+                            <FaUsers className="text-gray-400 mr-2 text-sm" />
+                            <h3 className="text-lg font-bold text-gray-800 truncate">
+                              {u.username}
+                            </h3>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => confirmDeleteUser(u.id)}
+                          className="ml-3 p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
+                          title="Delete User"
+                        >
+                          <FaTrash size={16} />
+                        </button>
+                      </div>
+
+                      {/* User Details */}
+                      <div className="space-y-2">
+                        {/* Email */}
+                        <div className="flex items-center text-gray-600">
+                          <FaEnvelope className="text-gray-400 mr-3 text-sm flex-shrink-0" />
+                          <span className="text-sm truncate" title={u.email}>
+                            {u.email}
+                          </span>
+                        </div>
+
+                        {/* Role */}
+                        <div className="flex items-center">
+                          <FaUserTag className="text-gray-400 mr-3 text-sm flex-shrink-0" />
+                          <span className="inline-block px-3 py-1 text-xs font-semibold text-[#F74F22] bg-red-50 rounded-full">
+                            {u.role}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
+        </div>
 
-          {/* Table Body - Scrollable */}
-          <div className="flex-1 overflow-auto">
-            {users.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full py-8 text-gray-500">
-                <FaUsers className="text-3xl sm:text-4xl mb-2 opacity-50" />
-                <p className="text-sm sm:text-base">No users found</p>
+        {/* Desktop Table Layout */}
+        <div className="hidden md:block h-full px-6 pb-6">
+          <div className="bg-white shadow-md rounded-lg h-full flex flex-col overflow-hidden">
+            {/* Table Header */}
+            <div className="flex-shrink-0">
+              <div className="bg-[#F74F22] text-white">
+                <div className="grid grid-cols-12 gap-4 px-4 py-3 text-sm font-semibold">
+                  <div className="col-span-4">Name</div>
+                  <div className="col-span-4">Email</div>
+                  <div className="col-span-3">Role</div>
+                  <div className="col-span-1 text-center">Actions</div>
+                </div>
               </div>
-            ) : (
-              <div className="divide-y divide-gray-200">
-                {users.map((u) => (
-                  <div 
-                    key={u.id} 
-                    className="grid grid-cols-12 gap-2 sm:gap-4 px-3 sm:px-4 py-3 hover:bg-red-50 transition-colors text-sm sm:text-base"
-                  >
-                    {/* Name */}
-                    <div className="col-span-4 font-semibold truncate" title={u.username}>
-                      {u.username}
+            </div>
+
+            {/* Table Body */}
+            <div className="flex-1 overflow-auto">
+              {users.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full py-8 text-gray-500">
+                  <FaUsers className="text-4xl mb-2 opacity-50" />
+                  <p className="text-base">No users found</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-gray-200">
+                  {users.map((u) => (
+                    <div 
+                      key={u.id} 
+                      className="grid grid-cols-12 gap-4 px-4 py-3 hover:bg-red-50 transition-colors text-sm"
+                    >
+                      <div className="col-span-4 font-semibold truncate" title={u.username}>
+                        {u.username}
+                      </div>
+                      <div className="col-span-4 truncate" title={u.email}>
+                        {u.email}
+                      </div>
+                      <div className="col-span-3">
+                        <span className="inline-block px-2 py-1 text-xs font-semibold text-[#F74F22] bg-red-50 rounded truncate">
+                          {u.role}
+                        </span>
+                      </div>
+                      <div className="flex justify-center col-span-1">
+                        <button
+                          onClick={() => confirmDeleteUser(u.id)}
+                          className="text-[#F74F22] hover:text-red-600 hover:bg-red-50 p-2 rounded transition-all duration-200 flex items-center justify-center"
+                          title="Delete User"
+                        >
+                          <FaTrash size={16} />
+                        </button>
+                      </div>
                     </div>
-                    
-                    {/* Email */}
-                    <div className="col-span-4 truncate" title={u.email}>
-                      {u.email}
-                    </div>
-                    
-                    {/* Role */}
-                    <div className="col-span-3">
-                      <span className="  inline-block px-2 py-1 text-xs sm:text-sm font-semibold text-[#F74F22] bg-red-50 rounded truncate">
-                        {u.role}
-                      </span>
-                    </div>
-                    
-                    {/* Actions */}
-                    <div className="flex justify-center col-span-1">
-                      <button
-                        onClick={() => confirmDeleteUser(u.id)}
-                        className="text-[#F74F22] hover:text-red-600 hover:bg-red-50 p-1.5 sm:p-2 rounded transition-all duration-200 flex items-center justify-center"
-                        title="Delete User"
-                      >
-                        <FaTrash size={window.innerWidth < 640 ? 14 : 16} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

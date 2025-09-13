@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../base_api/api";
-import { FaTrash, FaTags, FaPlus } from "react-icons/fa";
+import { FaTrash, FaTags, FaPlus, FaHashtag } from "react-icons/fa";
 import ToastMessage from "../toastmessage/ToastMessage";
 
 const DonationCategories = () => {
@@ -106,13 +106,21 @@ const DonationCategories = () => {
 
   return (
     <div className="flex flex-col h-full">
-       <title>Admin Panel All Doantion Categories - BigHearts</title>
+      <title>Admin Panel All Donation Categories - BigHearts</title>
       {/* Toast */}
       <ToastMessage message={toastMessage} type={toastType} />
 
       {/* Header */}
       <div className="flex justify-between items-center p-4 sm:p-6">
-        <h1 className="text-white text-2xl sm:text-3xl font-bold">Donation Categories</h1>
+        <div>
+          <h1 className="text-white text-2xl sm:text-3xl font-bold">Donation Categories</h1>
+          <div className="mt-2">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#F74F22] text-white">
+              <FaTags className="mr-2" />
+              {categories.length} Categories
+            </span>
+          </div>
+        </div>
         <button
           onClick={() => setAddModal(true)}
           className="flex items-center gap-2 bg-[#F74F22] text-white px-4 py-2 rounded-lg hover:bg-red-600 transition "
@@ -121,47 +129,99 @@ const DonationCategories = () => {
         </button>
       </div>
 
-      {/* Table */}
-      <div className="flex-1 px-4 sm:px-6 pb-4 sm:pb-6 min-h-0">
-        <div className="bg-white shadow-md rounded-lg h-full flex flex-col overflow-hidden">
-          {/* Table Header */}
-          <div className="bg-[#F74F22] text-white">
-            <div className="grid grid-cols-2 sm:grid-cols-12 gap-4 px-4 py-3 text-sm sm:text-base font-semibold">
-               <div className="col-span-2 hidden sm:block text-left">ID</div>
-              <div className="col-span-9 text-left">Category Name</div>
-              <div className="col-span-1 text-center">Actions</div>
+      {/* Content Area */}
+      <div className="flex-1 min-h-0">
+        {/* Mobile and tablet Card Layout */}
+        <div className="md:hidden h-full">
+          <div className="px-4 pb-4 h-full">
+            <div className="h-full overflow-y-auto">
+              {categories.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                  <FaTags className="text-5xl mb-4 opacity-50" />
+                  <p className="text-lg">No categories found</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {categories.map((c) => (
+                    <div 
+                      key={c.id} 
+                      className="bg-white rounded-xl shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow duration-200"
+                    >
+                      {/* Category Header */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center mb-2">
+                            <FaTags className="text-gray-400 mr-3 text-sm" />
+                            <h3 className="text-lg font-bold text-gray-800">
+                              {c.name}
+                            </h3>
+                          </div>
+                          
+                          {/* Category ID */}
+                          <div className="flex items-center text-gray-500">
+                            <FaHashtag className="mr-2 text-sm" />
+                            <span className="text-sm">ID: {c.id}</span>
+                          </div>
+                        </div>
+                        
+                        <button
+                          onClick={() => confirmDeleteCategory(c.id)}
+                          className="ml-3 p-3 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
+                          title="Delete Category"
+                        >
+                          <FaTrash size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
+        </div>
 
-          {/* Table Body */}
-          <div className="flex-1 overflow-auto">
-            {categories.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full py-8 text-gray-500">
-                <FaTags className="text-3xl sm:text-4xl mb-2 opacity-50" />
-                <p className="text-sm sm:text-base">No categories found</p>
+        {/* Desktop Table Layout */}
+        <div className="hidden md:block h-full px-6 pb-6">
+          <div className="bg-white shadow-md rounded-lg h-full flex flex-col overflow-hidden">
+            {/* Table Header */}
+            <div className="bg-[#F74F22] text-white">
+              <div className="grid grid-cols-12 gap-4 px-4 py-3 text-sm font-semibold">
+                <div className="col-span-2 text-left">ID</div>
+                <div className="col-span-9 text-left">Category Name</div>
+                <div className="col-span-1 text-center">Actions</div>
               </div>
-            ) : (
-              <div className="divide-y divide-gray-200">
-                {categories.map((c) => (
-                  <div
-                    key={c.id}
-                    className="grid grid-cols-2 sm:grid-cols-12 gap-4 px-4 py-3 hover:bg-red-50 transition text-sm sm:text-base"
-                  >
-                    <div className="col-span-2">{c.id}</div>
-                    <div className="col-span-9 font-semibold">{c.name}</div>
-                    <div className="col-span-1 flex justify-center">
-                      <button
-                        onClick={() => confirmDeleteCategory(c.id)}
-                        className="text-[#F74F22] hover:text-red-600 hover:bg-red-50 p-2 rounded transition"
-                        title="Delete Category"
-                      >
-                        <FaTrash size={16} />
-                      </button>
+            </div>
+
+            {/* Table Body */}
+            <div className="flex-1 overflow-auto">
+              {categories.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full py-8 text-gray-500">
+                  <FaTags className="text-4xl mb-2 opacity-50" />
+                  <p className="text-base">No categories found</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-gray-200">
+                  {categories.map((c) => (
+                    <div
+                      key={c.id}
+                      className="grid grid-cols-12 gap-4 px-4 py-3 hover:bg-red-50 transition text-sm"
+                    >
+                      <div className="col-span-2">{c.id}</div>
+                      <div className="col-span-9 font-semibold">{c.name}</div>
+                      <div className="col-span-1 flex justify-center">
+                        <button
+                          onClick={() => confirmDeleteCategory(c.id)}
+                          className="text-[#F74F22] hover:text-red-600 hover:bg-red-50 p-2 rounded transition"
+                          title="Delete Category"
+                        >
+                          <FaTrash size={16} />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
