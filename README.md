@@ -38,6 +38,7 @@ Fully responsive design using MUI + Tailwind CSS
 Clean, accessible, user-friendly layouts
 
 📸 Screenshots
+
 📝 Register Page
 <img width="1918" height="893" alt="image" src="https://github.com/user-attachments/assets/002bd0a7-53de-4113-ba81-cf21e44e00ed" />
 
