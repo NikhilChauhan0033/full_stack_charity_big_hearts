@@ -1,6 +1,6 @@
 from rest_framework import serializers 
 from django.contrib.auth.models import User
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer #for logging in with either email or username and generating JWT tokens.
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import DonationCategory, DonationCampaign, Donation, Team,Contact,Cart
 
@@ -63,7 +63,7 @@ class MyTokenObtainPairSerializer(serializers.Serializer):
             "refresh": str(refresh),
             "access": str(refresh.access_token),
             "username": user.first_name or user.username,
-            "is_admin": user.is_staff or user.is_superuser,  # 👈 unified flag
+            "is_admin": user.is_staff or user.is_superuser,
         }
 
 

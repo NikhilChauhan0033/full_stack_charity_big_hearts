@@ -1,12 +1,15 @@
 from rest_framework.generics import (
-    CreateAPIView,
-    ListCreateAPIView,
-    RetrieveUpdateDestroyAPIView,
-    ListAPIView,
-    RetrieveAPIView,
-    DestroyAPIView,
-RetrieveUpdateAPIView,
+    CreateAPIView, #Allows only POST (create) operations.
+    ListCreateAPIView, #Allows both GET (list) and POST (create)
+    RetrieveUpdateDestroyAPIView, #Purpose: Full CRUD for ONE object GET,PUT,PATCH,DELETE
+    ListAPIView, #urpose: List ALL objects Supports method: GET only
+    RetrieveAPIView, #Purpose: Get ONE single object Supports method: GET only
+    DestroyAPIView, #Purpose: Delete ONE object Supports method: DELETE only
+RetrieveUpdateAPIView, #purpose: Get ONE object + update it Supports methods: GET PUT PATCH
 )
+
+# PUT replaces the entire object with the data you send.
+# PATCH updates only the fields you send, without touching the rest.
 
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
@@ -58,7 +61,7 @@ class DonationCategoryListCreateAPIView(ListCreateAPIView):
 class DonationCategoryDetailAPIView(RetrieveUpdateDestroyAPIView):
     queryset = DonationCategory.objects.all()
     serializer_class = DonationCategorySerializer
-    lookup_field = "id"
+    lookup_field = "id" #In Django REST Framework, lookup_field tells the view which field to use to find a single object in the database when making requests
     permission_classes = [IsAdminOrReadOnly]
 
 
@@ -258,7 +261,7 @@ class AdminUserDeleteView(DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = AdminUserSerializer
     permission_classes = [IsAdminOrReadOnly]
-    lookup_field = "pk"
+    lookup_field = "pk" #pk means primary key.id is the primary key So pk is just a shortcut for id
 
 class DonationCampaignAdminListAPIView(ListAPIView):
     queryset = DonationCampaign.objects.all()

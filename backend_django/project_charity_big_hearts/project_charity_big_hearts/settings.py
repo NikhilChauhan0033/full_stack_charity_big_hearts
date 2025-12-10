@@ -31,23 +31,23 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.admin', #Enables Django’s built-in admin panel.
+    'django.contrib.auth', #Handles authentication (login, logout, password hashing).
+    'django.contrib.contenttypes', #Required by Django ORM.
+    'django.contrib.sessions', #Stores session data on the server.
+    'django.contrib.messages', #Enables success, error, warning messages after actions.
+    'django.contrib.staticfiles', #Helps serve CSS, JS, images (static files).
 
-    'rest_framework',# Django rest framework
-    'rest_framework_simplejwt.token_blacklist',# simple JWT token blacklist
-    'corsheaders',# CORS header for cross-origin requests
+    'rest_framework',# Django rest framework Allows you to build APIs (GET, POST, PUT, DELETE).
+    'rest_framework_simplejwt.token_blacklist',# simple JWT token blacklist Adds token blacklisting functionality. Useful when the user logs out → refresh token gets invalidated. Helps block old tokens after password reset or logout.
+    'corsheaders',# Allows your React frontend (running on http://localhost:5173) to talk to Django backend.
     'app_charity_big_hearts',# my Django app name
     'django_filters', # Django filter for filtering API results
 
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',# CORS middleware to handle cross-origin requests
+    'corsheaders.middleware.CorsMiddleware',# CORS middleware to handle cross-origin requests It allows: React → Django API requests
     'django.middleware.security.SecurityMiddleware',# Security middleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -130,19 +130,19 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-CORS_ALLOW_ALL_ORIGINS = True # allow all origins for cors headers
+CORS_ALLOW_ALL_ORIGINS = True # allow all origins for cors headers This allows any frontend (React, Vue, Angular, Postman, mobile apps, etc.) to access your API.
 
 # REST framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
+    ], #This tells DRF to authenticate every protected API using JWT.
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 6,
+    'PAGE_SIZE': 6,  #Your API will return 6 items per page.
 }
 
 # JWT settings
@@ -150,11 +150,11 @@ from datetime import timedelta
 
 # Simple JWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Security over convenience
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # Your requirement
-    'ROTATE_REFRESH_TOKENS': True,                   # Enhanced security
-    'BLACKLIST_AFTER_ROTATION': True,                # Prevent token reuse
-    'UPDATE_LAST_LOGIN': True,                       # 👈 YES! Add this
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # The access token expires after 15 minutes. High security → token refresh required often. Your frontend should automatically use the refresh token to get a new access token.
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # The user stays logged in for 7 days (unless they log out manually).
+    'ROTATE_REFRESH_TOKENS': True,  # Every time your frontend refreshes the token:A new refresh token is issued Old refresh token becomes invalid (for security)
+    'BLACKLIST_AFTER_ROTATION': True, # When refresh tokens rotate, The old one is added to the blacklist table It cannot be used again.
+    'UPDATE_LAST_LOGIN': True, #Every time the user successfully logs in → Django updates: Useful for: Dashboard analytics Admin panel tracking Security logs
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 

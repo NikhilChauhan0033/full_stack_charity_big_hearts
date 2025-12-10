@@ -6,7 +6,7 @@ const API = axios.create({
   baseURL: 'http://127.0.0.1:8000/api/auth/',
 });
 
-// 🔐 Decode JWT token to check expiration (More robust version)
+// Decode JWT token to check expiration (More robust version)
 const decodeToken = (token) => {
   try {
     const base64Url = token.split('.')[1];
@@ -24,7 +24,7 @@ const decodeToken = (token) => {
   }
 };
 
-// 🔐 Function to check if JWT is expired (Updated version)
+// Function to check if JWT is expired (Updated version)
 const isTokenExpired = (token) => {
   if (!token) return true;
   
@@ -36,7 +36,7 @@ const isTokenExpired = (token) => {
   return decoded.exp < (currentTime + 30);
 };
 
-// 🔄 Refresh access token function
+// Refresh access token function
 const refreshAccessToken = async () => {
   const refresh = localStorage.getItem('refresh');
   if (!refresh) {
@@ -71,7 +71,7 @@ const refreshAccessToken = async () => {
   }
 };
 
-// 🎯 Get valid access token (refresh if needed)
+// Get valid access token (refresh if needed)
 const getValidAccessToken = async () => {
   const accessToken = localStorage.getItem('access');
   
@@ -89,7 +89,7 @@ const getValidAccessToken = async () => {
   return await refreshAccessToken();
 };
 
-// 🚪 Logout function
+// Logout function
 const logout = async () => {
   const refresh = localStorage.getItem('refresh');
   
@@ -108,7 +108,7 @@ const logout = async () => {
   window.location.href = '/login';
 };
 
-// ✅ Request Interceptor: Attach fresh access token
+//  Request Interceptor: Attach fresh access token
 API.interceptors.request.use(async (config) => {
   try {
     const access = await getValidAccessToken();
@@ -126,7 +126,7 @@ API.interceptors.request.use(async (config) => {
   return Promise.reject(error);
 });
 
-// ✅ Response Interceptor: Handle token expiry and retry
+// Response Interceptor: Handle token expiry and retry
 API.interceptors.response.use(
   (response) => response,
   async (error) => {

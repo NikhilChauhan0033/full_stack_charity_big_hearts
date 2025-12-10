@@ -32,7 +32,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', TokenBlacklistView.as_view(), name='logout'),
 
-    # 📦 API Endpoints
+    #  API Endpoints
     path('categories/', DonationCategoryListCreateAPIView.as_view(), name='category-list'),
     path('categories/<int:id>/', DonationCategoryDetailAPIView.as_view(), name='category-detail'),
 
