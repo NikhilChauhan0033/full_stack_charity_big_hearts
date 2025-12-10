@@ -59,3 +59,16 @@ json format for login
     "identifier":"krutik@gmail.com",
     "password":"krutik123"
 }
+
+
+Run for backend 
+cd backend_djnago
+env\Scripts\activate
+cd project name
+python manage.py runserver
+
+Fun for Frontend_react_vite
+cd charity_big_hearts
+npm run dev
+
+
